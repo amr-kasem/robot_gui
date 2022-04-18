@@ -1,0 +1,42 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:fluent_ui/fluent_ui.dart';
+
+class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final values = {
+      'Arabic': const Locale('ar'),
+      'English': const Locale('en'),
+    };
+
+    return Padding(
+      padding: const EdgeInsets.all(15),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text("Settings.SelectLanguage").tr(),
+          const SizedBox(height: 15),
+          Combobox<Locale>(
+            isExpanded: true,
+            items: values.keys
+                .map(
+                  (String e) => ComboboxItem<Locale>(
+                    value: values[e],
+                    child: Text('Languages.$e').tr(),
+                  ),
+                )
+                .toList(),
+            value: context.locale,
+            onChanged: (value) {
+              if (value != null) context.setLocale(value);
+            },
+          ),
+          const SizedBox(height: 15),
+          const Divider(),
+        ],
+      ),
+    );
+  }
+}

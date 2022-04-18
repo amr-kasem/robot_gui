@@ -1,4 +1,5 @@
 {
+    "Title":"وحدة التحكم",
     "Navigation": {
         "Main": "الرئيسية",
         "Settings": "الإعدادات"
@@ -6,5 +7,8 @@
     "Languages": {
         "Arabic": "العربية",
         "English": "English"
+    },
+    "Settings":{
+        "SelectLanguage":"اختر اللغة"
     }
 }

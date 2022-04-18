@@ -1,4 +1,5 @@
 {
+    "Title":"Control Station",
     "Navigation": {
         "Main": "Home",
         "Settings": "Settings"
@@ -6,5 +7,8 @@
     "Languages": {
         "Arabic": "العربية",
         "English": "English"
+    },
+    "Settings":{
+        "SelectLanguage":"Select Language"
     }
 }
