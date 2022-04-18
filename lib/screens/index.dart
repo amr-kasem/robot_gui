@@ -1,9 +1,10 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
-import 'package:robot_gui/screens/home/home_screen.dart';
-import 'package:robot_gui/screens/settings/settings_screen.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'home/home_screen.dart';
+import 'settings/settings_screen.dart';
+import '../widgets/title_bar/window_buttons.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -15,6 +16,21 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> with WindowListener {
   final viewKey = GlobalKey();
   int index = 0;
+  @override
+  void initState() {
+    windowManager.addListener(this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    windowManager.removeListener(this);
+    super.dispose();
+  }
+
+  void updateView() {
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +58,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         automaticallyImplyLeading: false,
         title: () {
           return DragToMoveArea(
+            key: UniqueKey(),
             child: Align(
               alignment: AlignmentDirectional.center,
               child: const Text('Title').tr(),
@@ -53,7 +70,10 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
             : DragToMoveArea(
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const [Spacer(), WindowButtons()],
+                  children: const [
+                    Spacer(),
+                    WindowButtons(),
+                  ],
                 ),
               ),
       ),
@@ -62,7 +82,10 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         children: [
           const Center(child: Text("test")),
           ScaffoldPage.scrollable(
-            children: const [HomeScreen(), SettingsScreen()],
+            children: [
+              const HomeScreen(),
+              SettingsScreen(updateView: updateView)
+            ],
           ),
         ],
       ),
@@ -77,18 +100,19 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         context: context,
         builder: (_) {
           return ContentDialog(
-            title: const Text('Confirm close'),
-            content: const Text('Are you sure you want to close this window?'),
+            title: const Text('Actions.onClose.title').tr(),
+            content: const Text('Actions.onClose.alert').tr(),
             actions: [
-              FilledButton(
-                child: const Text('Yes'),
+              Button(
+                child: const Text('Actions.Buttons.yes').tr(),
                 onPressed: () {
                   Navigator.pop(context);
-                  windowManager.destroy();
+                  windowManager.setPreventClose(false);
+                  windowManager.close();
                 },
               ),
-              Button(
-                child: const Text('No'),
+              FilledButton(
+                child: const Text('Actions.Buttons.no').tr(),
                 onPressed: () {
                   Navigator.pop(context);
                 },
@@ -98,22 +122,5 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         },
       );
     }
-  }
-}
-
-class WindowButtons extends StatelessWidget {
-  const WindowButtons({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final ThemeData theme = FluentTheme.of(context);
-    return SizedBox(
-      width: 138,
-      height: 50,
-      child: WindowCaption(
-        brightness: theme.brightness,
-        backgroundColor: Colors.transparent,
-      ),
-    );
   }
 }

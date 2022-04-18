@@ -2,7 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
 class SettingsScreen extends StatelessWidget {
-  const SettingsScreen({Key? key}) : super(key: key);
+  final Function updateView;
+  const SettingsScreen({Key? key, required this.updateView}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +32,7 @@ class SettingsScreen extends StatelessWidget {
             value: context.locale,
             onChanged: (value) {
               if (value != null) context.setLocale(value);
+              updateView();
             },
           ),
           const SizedBox(height: 15),

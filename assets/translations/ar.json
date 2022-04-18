@@ -10,5 +10,15 @@
     },
     "Settings":{
         "SelectLanguage":"اختر اللغة"
+    },
+    "Actions":{
+        "onClose":{
+            "alert":"هل تريد حقاً إغلاق لوحة التحكم؟",
+            "title":"تأكيد الإغلاق"
+        },
+        "Buttons":{
+            "yes":"نعم",
+            "no":"لا"
+        }
     }
 }

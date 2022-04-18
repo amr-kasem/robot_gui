@@ -10,5 +10,15 @@
     },
     "Settings":{
         "SelectLanguage":"Select Language"
+    },
+    "Actions":{
+        "onClose":{
+            "alert":"Are you sure you want to close this window?",
+            "title":"Confirm close"
+        },
+        "Buttons":{
+            "yes":"Yes",
+            "no":"No"
+        }
     }
 }
