@@ -1,7 +1,9 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
+import 'package:robot_gui/widgets/title_bar/battery_level.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
+import '../widgets/title_bar/connection_status.dart';
 import 'home/home_screen.dart';
 import 'settings/settings_screen.dart';
 import '../widgets/title_bar/window_buttons.dart';
@@ -37,6 +39,16 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
     return NavigationView(
       key: viewKey,
       pane: NavigationPane(
+        displayMode: PaneDisplayMode.compact,
+        header: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Text(
+              'DrRobot',
+              style: FluentTheme.of(context).typography.title,
+            ),
+          ),
+        ),
         selected: index,
         items: [
           PaneItem(
@@ -60,8 +72,11 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
           return DragToMoveArea(
             key: UniqueKey(),
             child: Align(
-              alignment: AlignmentDirectional.center,
-              child: const Text('Title').tr(),
+              alignment: AlignmentDirectional.centerStart,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: const Text('Title').tr(),
+              ),
             ),
           );
         }(),
@@ -72,6 +87,10 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
                     Spacer(),
+                    BatteryLevel(),
+                    SizedBox(width: 15),
+                    ConnectionStatus(),
+                    SizedBox(width: 15),
                     WindowButtons(),
                   ],
                 ),
@@ -80,13 +99,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
       content: NavigationBody(
         index: index,
         children: [
-          const Center(child: Text("test")),
-          ScaffoldPage.scrollable(
-            children: [
-              const HomeScreen(),
-              SettingsScreen(updateView: updateView)
-            ],
-          ),
+          const HomeScreen(),
+          SettingsScreen(updateView: updateView),
         ],
       ),
     );

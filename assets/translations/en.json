@@ -18,7 +18,8 @@
         },
         "Buttons":{
             "yes":"Yes",
-            "no":"No"
+            "no":"No",
+            "retry":"Tap to reload"
         }
     }
 }
