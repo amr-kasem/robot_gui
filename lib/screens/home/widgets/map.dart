@@ -1,7 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:vector_map_tiles/vector_map_tiles.dart';
 
 class MapView extends StatelessWidget {
   const MapView({Key? key}) : super(key: key);
@@ -13,7 +12,7 @@ class MapView extends StatelessWidget {
         center: LatLng(51.5, -0.09),
         zoom: 13.0,
       ),
-      layers: [
+      layers: const [
         // TileLayerOptions(
         //   urlTemplate: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         //   subdomains: ['a', 'b', 'c'],

@@ -47,8 +47,10 @@ dependencies:
   flutter_map: ^0.14.0
   vector_map_tiles: ^1.4.3
   flutter_js: ^0.5.0+6
-  roslib: ^0.0.3
-
+  roslib: 
+    git:
+      url: https://github.com/auk-b57/roslib.git
+      ref: master # branch name
 dev_dependencies:
   flutter_test:
     sdk: flutter

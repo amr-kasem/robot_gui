@@ -444,9 +444,11 @@ packages:
   roslib:
     dependency: "direct main"
     description:
-      name: roslib
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: master
+      resolved-ref: "5c1a037ab4c94a39220acf011fb899baa0b4db3e"
+      url: "https://github.com/auk-b57/roslib.git"
+    source: git
     version: "0.0.3"
   scroll_pos:
     dependency: transitive
@@ -711,7 +713,7 @@ packages:
       name: web_socket_channel
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.0"
+    version: "2.1.0"
   win32:
     dependency: transitive
     description:

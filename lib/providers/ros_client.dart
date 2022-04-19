@@ -8,10 +8,9 @@ class ROSClient extends ChangeNotifier {
     _ros = Ros();
     connect();
   }
-  Stream<Status> get status => _ros.statusStream;
+  Stream<Status> get status => _ros.statusStream!;
 
   void connect() {
-    print("trying to connect");
     _ros.connect(url: 'ws://0.0.0.0:9090');
   }
 }

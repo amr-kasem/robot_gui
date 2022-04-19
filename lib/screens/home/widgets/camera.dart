@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_mjpeg/flutter_mjpeg.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_map/flutter_map.dart';
 
 class CameraViewer extends StatefulWidget {
   const CameraViewer({Key? key}) : super(key: key);
