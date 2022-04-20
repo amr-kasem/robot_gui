@@ -1,6 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:robot_gui/screens/home/widgets/camera.dart';
 import 'package:robot_gui/screens/home/widgets/map.dart';
+import 'package:robot_gui/screens/home/widgets/rviz.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -23,9 +24,7 @@ class HomeScreen extends StatelessWidget {
               ),
               Divider(),
               Expanded(
-                child: Center(
-                  child: Text("data"),
-                ),
+                child: RvizView(),
               ),
             ],
           ),
