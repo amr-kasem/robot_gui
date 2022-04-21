@@ -1,5 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
 import 'package:provider/provider.dart';
 import 'package:robot_gui/providers/ros_client.dart';
@@ -48,12 +49,31 @@ void main() async {
     });
   }
 
-  runApp(EasyLocalization(
+  runApp(
+    EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('ar')],
       path:
           'assets/translations', // <-- change the path of the translation files
       fallbackLocale: const Locale('en'),
-      child: const MyApp()));
+      child: const MyApp(),
+    ),
+  );
+}
+
+class ForwardIntent extends Intent {
+  const ForwardIntent();
+}
+
+class BackwardIntent extends Intent {
+  const BackwardIntent();
+}
+
+class LeftIntent extends Intent {
+  const LeftIntent();
+}
+
+class RightIntent extends Intent {
+  const RightIntent();
 }
 
 class MyApp extends StatelessWidget {
@@ -63,19 +83,42 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-        providers: [
-          ChangeNotifierProvider(create: (_) => ROSClient()),
-        ],
-        child: FluentApp(
-          localizationsDelegates: context.localizationDelegates,
-          supportedLocales: context.supportedLocales,
-          locale: context.locale,
-          debugShowCheckedModeBanner: false,
-          title: 'Flutter Demo',
-          home: const MyHomePage(),
-        ),
-        builder: (context, child) {
-          return child!;
-        });
+      providers: [
+        ChangeNotifierProvider(create: (_) => ROSClient()),
+      ],
+      child: FluentApp(
+        shortcuts: {
+          LogicalKeySet(LogicalKeyboardKey.arrowUp): const ForwardIntent(),
+          LogicalKeySet(LogicalKeyboardKey.arrowDown): const BackwardIntent(),
+          LogicalKeySet(LogicalKeyboardKey.arrowLeft): const LeftIntent(),
+          LogicalKeySet(LogicalKeyboardKey.arrowRight): const RightIntent(),
+        },
+        localizationsDelegates: context.localizationDelegates,
+        supportedLocales: context.supportedLocales,
+        locale: context.locale,
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        home: const MyHomePage(),
+      ),
+      builder: (ctx, child) {
+        return Actions(
+          child: child!,
+          actions: <Type, Action<Intent>>{
+            ForwardIntent: CallbackAction<ForwardIntent>(
+              onInvoke: (ForwardIntent intent) => print('arrow up'),
+            ),
+            BackwardIntent: CallbackAction<BackwardIntent>(
+              onInvoke: (BackwardIntent intent) => print('arrow down'),
+            ),
+            LeftIntent: CallbackAction<LeftIntent>(
+              onInvoke: (LeftIntent intent) => print('arrow left'),
+            ),
+            RightIntent: CallbackAction<RightIntent>(
+              onInvoke: (RightIntent intent) => print('arrow right'),
+            ),
+          },
+        );
+      },
+    );
   }
 }

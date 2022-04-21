@@ -15,7 +15,7 @@ class _CameraViewerState extends State<CameraViewer> {
     return Mjpeg(
       width: double.infinity,
       key: UniqueKey(),
-      stream: 'http://151.70.199.169:82/mjpg/video.mjpg?resolution=640x480',
+      stream: 'http://0.0.0.0:8080/stream?topic=/stream1/image',
       // stream: 'http://151.70.199.169:822/mjpg/video.mjpg?resolution=640x480',
       fit: BoxFit.contain,
       loading: (ctx) => const Center(
@@ -23,6 +23,7 @@ class _CameraViewerState extends State<CameraViewer> {
       ),
       isLive: true,
       timeout: const Duration(seconds: 2),
+
       error: (ctx, e, v) {
         print(e);
         return TextButton(
