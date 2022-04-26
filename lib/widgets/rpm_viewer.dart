@@ -17,7 +17,6 @@ class RMPViewer extends StatelessWidget {
 
           if (snapshot.data != null) {
             final twist = (snapshot.data as Map)['msg'];
-            print(twist);
             l = twist['linear']['x'] as double;
 
             a = twist['angular']['z'] as double;
@@ -31,15 +30,15 @@ class RMPViewer extends StatelessWidget {
 
                   ac = (msg.data as Map)['angular']['z'] as double;
                 }
-
+                final isRtl = Directionality.of(context) == TextDirection.rtl;
                 return SfRadialGauge(
                   axes: <RadialAxis>[
                     RadialAxis(
                       minimum: -1.5,
                       maximum: 1.5,
-                      centerY: 0.6,
-                      centerX: 1,
-                      radiusFactor: 1.2,
+                      centerY: 0.5,
+                      centerX: isRtl ? 0.35 : 0.65,
+                      radiusFactor: 1,
                       axisLineStyle: AxisLineStyle(
                         thickness: 10,
                         cornerStyle: CornerStyle.bothCurve,
@@ -103,9 +102,10 @@ class RMPViewer extends StatelessWidget {
                       minimum: -1,
                       isInversed: true,
                       maximum: 1,
-                      radiusFactor: 0.8,
-                      centerY: 0.8,
-                      centerX: 0,
+                      radiusFactor: 0.5,
+                      centerY: 0.75,
+                      centerX: isRtl ? 0.85 : 0.15,
+                      labelOffset: 5,
                       axisLineStyle: AxisLineStyle(
                         thickness: 5,
                         cornerStyle: CornerStyle.bothCurve,
@@ -176,10 +176,10 @@ class RMPViewer extends StatelessWidget {
     return Align(
       alignment: AlignmentDirectional.bottomEnd,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 150, vertical: 50),
+        padding: const EdgeInsets.all(15),
         child: SizedBox(
-          height: 200,
-          width: 200,
+          height: 300,
+          width: 450,
           child: _getRadialGauge(context),
         ),
       ),
