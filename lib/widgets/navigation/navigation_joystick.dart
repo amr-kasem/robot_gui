@@ -1,6 +1,8 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:joystick/joystick.dart';
+import 'package:provider/provider.dart';
+import 'package:robot_gui/providers/ros_client.dart';
 
 class NavigationJoystick extends StatefulWidget {
   const NavigationJoystick({
@@ -14,6 +16,7 @@ class NavigationJoystick extends StatefulWidget {
 class _NavigationJoystickState extends State<NavigationJoystick> {
   @override
   Widget build(BuildContext context) {
+    final _rosClient = Provider.of<ROSClient>(context, listen: false);
     return Align(
       alignment: AlignmentDirectional.bottomStart,
       child: SizedBox(
@@ -32,10 +35,18 @@ class _NavigationJoystickState extends State<NavigationJoystick> {
                 backgroundColor: Colors.black,
                 opacity: 0.3,
                 joystickMode: JoystickModes.all,
-                onUpPressed: () {},
-                onLeftPressed: () {},
-                onRightPressed: () {},
-                onDownPressed: () {},
+                onUpPressed: () {
+                  _rosClient.linearUp();
+                },
+                onLeftPressed: () {
+                  _rosClient.angularUp();
+                },
+                onRightPressed: () {
+                  _rosClient.angularDown();
+                },
+                onDownPressed: () {
+                  _rosClient.linearDown();
+                },
                 onPressed: (_direction) {},
               ),
             ),
