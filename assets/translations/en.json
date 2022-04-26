@@ -2,7 +2,9 @@
     "Title":"Control Station",
     "Navigation": {
         "Main": "Home",
-        "Settings": "Settings"
+        "Settings": "Settings",
+        "Terminal": "SSH Terminal",
+        "Log": "ROS Log"
     },
     "Languages": {
         "Arabic": "العربية",
@@ -19,7 +21,8 @@
         "Buttons":{
             "yes":"Yes",
             "no":"No",
-            "retry":"Tap to reload"
+            "retry":"Tap to reload",
+            "track":"Track"
         }
     }
 }

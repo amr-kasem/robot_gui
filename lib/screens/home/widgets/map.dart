@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -72,9 +73,10 @@ class _MapViewState extends State<MapView> {
                 checked: isTracking,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    Icon(material.Icons.location_searching),
-                    Text("Track"),
+                  children: [
+                    const Icon(material.Icons.location_searching),
+                    const SizedBox(width: 10),
+                    const Text("Actions.Buttons.track").tr(),
                   ],
                 ),
                 onChanged: (v) {

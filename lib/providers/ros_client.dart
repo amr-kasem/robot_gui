@@ -57,32 +57,39 @@ class ROSClient extends ChangeNotifier {
     });
   }
 
+  double hysteresisCheck(double value, {double width = 0.01}) {
+    if (value < width && value > -width) {
+      return 0;
+    }
+    return value;
+  }
+
   void linearUp({i = 0.01}) {
-    if (cmdVelMsg['linear']!['x']! < MaxLinearVel &&
-        cmdVelMsg['linear']!['x']! > MinLinearVel) {
+    if (cmdVelMsg['linear']!['x']! < MaxLinearVel) {
       cmdVelMsg['linear']!['x'] = cmdVelMsg['linear']!['x']! + i;
     }
+    cmdVelMsg['linear']!['x'] = hysteresisCheck(cmdVelMsg['linear']!['x']!);
   }
 
   void linearDown({i = 0.01}) {
-    if (cmdVelMsg['linear']!['x']! < MaxLinearVel &&
-        cmdVelMsg['linear']!['x']! > MinLinearVel) {
+    if (cmdVelMsg['linear']!['x']! > MinLinearVel) {
       cmdVelMsg['linear']!['x'] = cmdVelMsg['linear']!['x']! - i;
     }
+    cmdVelMsg['linear']!['x'] = hysteresisCheck(cmdVelMsg['linear']!['x']!);
   }
 
   void angularUp({i = 0.01}) {
-    if (cmdVelMsg['angular']!['z']! < MaxAngularVel &&
-        cmdVelMsg['angular']!['z']! > MinAngularVel) {
+    if (cmdVelMsg['angular']!['z']! < MaxAngularVel) {
       cmdVelMsg['angular']!['z'] = cmdVelMsg['angular']!['z']! + i;
     }
+    cmdVelMsg['angular']!['z'] = hysteresisCheck(cmdVelMsg['angular']!['z']!);
   }
 
   void angularDown({i = 0.01}) {
-    if (cmdVelMsg['angular']!['z']! < MaxAngularVel &&
-        cmdVelMsg['angular']!['z']! > MinAngularVel) {
+    if (cmdVelMsg['angular']!['z']! > MinAngularVel) {
       cmdVelMsg['angular']!['z'] = cmdVelMsg['angular']!['z']! - i;
     }
+    cmdVelMsg['angular']!['z'] = hysteresisCheck(cmdVelMsg['angular']!['z']!);
   }
 
   void zeroLinear() {

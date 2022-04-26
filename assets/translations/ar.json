@@ -2,7 +2,9 @@
     "Title":"وحدة التحكم",
     "Navigation": {
         "Main": "الرئيسية",
-        "Settings": "الإعدادات"
+        "Settings": "الإعدادات",
+        "Terminal": "SSH Terminal",
+        "Log": "التقارير (ROS)"
     },
     "Languages": {
         "Arabic": "العربية",
@@ -19,7 +21,8 @@
         "Buttons":{
             "yes":"نعم",
             "no":"لا",
-            "retry":"أعد المحاولة"
+            "retry":"أعد المحاولة",
+            "track":"تتبع المركبة"
         }
     }
 }

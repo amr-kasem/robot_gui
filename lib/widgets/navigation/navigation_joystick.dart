@@ -35,8 +35,8 @@ class _NavigationJoystickState extends State<NavigationJoystick> {
                     size: 100,
                     isDraggable: false,
                     iconColor: Colors.white,
-                    backgroundColor: Colors.black,
-                    opacity: 0.3,
+                    backgroundColor: Colors.white,
+                    opacity: 0.25,
                     joystickMode: JoystickModes.all,
                     onUpPressed: () {
                       _rosClient.linearUp();
@@ -60,7 +60,7 @@ class _NavigationJoystickState extends State<NavigationJoystick> {
                     _rosClient.zeroAngular();
                     _rosClient.zeroLinear();
                   },
-                  icon: Icon(
+                  icon: const Icon(
                     material.Icons.stop_circle,
                   ),
                 )
