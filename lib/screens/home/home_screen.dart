@@ -1,4 +1,5 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:robot_gui/screens/home/widgets/direction_widget.dart';
 import 'package:robot_gui/screens/home/widgets/motion_widget.dart';
 import '../../widgets/navigation/navigation_joystick.dart';
 import '../home/widgets/camera.dart';
@@ -21,6 +22,7 @@ class HomeScreen extends StatelessWidget {
               NavigationJoystick(),
               RMPViewer(),
               MotionWidget(),
+              DirectionWidget(),
             ],
           ),
           flex: 4,
@@ -29,7 +31,7 @@ class HomeScreen extends StatelessWidget {
         Flexible(
           flex: 2,
           child: Column(
-            children: [
+            children: const [
               Expanded(
                 child: MapView(),
               ),

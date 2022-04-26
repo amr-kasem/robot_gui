@@ -3,6 +3,8 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter/material.dart' as material;
+import 'package:provider/provider.dart';
+import 'package:robot_gui/providers/navigation.dart';
 
 class MapView extends StatefulWidget {
   const MapView({Key? key}) : super(key: key);
@@ -41,6 +43,10 @@ class _MapViewState extends State<MapView> {
                     isTracking = false;
                   });
                 }
+              },
+              onLongPress: (_, _w) {
+                Provider.of<NavigationProvider>(context, listen: false)
+                    .isNavigating = true;
               }),
           layers: [
             TileLayerOptions(

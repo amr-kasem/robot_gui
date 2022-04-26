@@ -53,6 +53,10 @@ class ROSClient extends ChangeNotifier {
   Stream<dynamic> get cmdVelFB => _cmdVelFB.subscription!;
   Stream<dynamic> get cmdVel =>
       Stream.periodic(const Duration(milliseconds: 100), (_) => cmdVelMsg);
+
+  Stream<dynamic> get relativePose =>
+      Stream.periodic(const Duration(milliseconds: 100), (_) => {'yaw': 0.0});
+
   void connect() async {
     _ros.connect(url: 'ws://0.0.0.0:9090');
     await _cmdVelFB.subscribe();
