@@ -101,7 +101,7 @@ class RMPViewer extends StatelessWidget {
                   maximum: 1,
                   radiusFactor: 0.5,
                   centerY: 0.76,
-                  centerX: isRtl ? 0.84 : 0.26,
+                  centerX: isRtl ? 0.84 : 0.16,
                   labelOffset: 6,
                   axisLabelStyle: const GaugeTextStyle(
                     fontWeight: FontWeight.w900,

@@ -89,6 +89,10 @@ class BreakAngularIntent extends Intent {
   const BreakAngularIntent();
 }
 
+class FreeEmergencyIntent extends Intent {
+  const FreeEmergencyIntent();
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -108,6 +112,7 @@ class MyApp extends StatelessWidget {
           LogicalKeySet(LogicalKeyboardKey.space): const BreakIntent(),
           LogicalKeySet(LogicalKeyboardKey.keyX): const BreakLinearIntent(),
           LogicalKeySet(LogicalKeyboardKey.keyZ): const BreakAngularIntent(),
+          LogicalKeySet(LogicalKeyboardKey.escape): const FreeEmergencyIntent(),
         },
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,
@@ -145,6 +150,12 @@ class MyApp extends StatelessWidget {
             ),
             BreakAngularIntent: CallbackAction<BreakAngularIntent>(
               onInvoke: (BreakAngularIntent intent) => _ros.zeroAngular(),
+            ),
+            FreeEmergencyIntent: CallbackAction<FreeEmergencyIntent>(
+              onInvoke: (FreeEmergencyIntent intent) {
+                _ros.isEmergency = true;
+                return;
+              },
             ),
           },
         );

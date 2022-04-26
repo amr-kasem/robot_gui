@@ -9,6 +9,10 @@ class ROSClient extends ChangeNotifier {
   double MinLinearVel = -1.5;
   double MaxAngularVel = 1;
   double MinAngularVel = -1;
+
+  bool _emergencyStop = true;
+  bool _forceEmergency = false;
+
   ROSClient() {
     _ros = Ros();
     _cmdVel = Topic(
@@ -65,6 +69,7 @@ class ROSClient extends ChangeNotifier {
   }
 
   void linearUp({i = 0.01}) {
+    if (_emergencyStop) return;
     if (cmdVelMsg['linear']!['x']! < MaxLinearVel) {
       cmdVelMsg['linear']!['x'] = cmdVelMsg['linear']!['x']! + i;
     }
@@ -72,6 +77,7 @@ class ROSClient extends ChangeNotifier {
   }
 
   void linearDown({i = 0.01}) {
+    if (_emergencyStop) return;
     if (cmdVelMsg['linear']!['x']! > MinLinearVel) {
       cmdVelMsg['linear']!['x'] = cmdVelMsg['linear']!['x']! - i;
     }
@@ -79,6 +85,7 @@ class ROSClient extends ChangeNotifier {
   }
 
   void angularUp({i = 0.01}) {
+    if (_emergencyStop) return;
     if (cmdVelMsg['angular']!['z']! < MaxAngularVel) {
       cmdVelMsg['angular']!['z'] = cmdVelMsg['angular']!['z']! + i;
     }
@@ -86,6 +93,7 @@ class ROSClient extends ChangeNotifier {
   }
 
   void angularDown({i = 0.01}) {
+    if (_emergencyStop) return;
     if (cmdVelMsg['angular']!['z']! > MinAngularVel) {
       cmdVelMsg['angular']!['z'] = cmdVelMsg['angular']!['z']! - i;
     }
@@ -98,5 +106,23 @@ class ROSClient extends ChangeNotifier {
 
   void zeroAngular() {
     cmdVelMsg['angular']!['z'] = 0;
+  }
+
+  bool get isEmergency => _emergencyStop;
+
+  set isEmergency(bool v) {
+    print(v);
+    print(_forceEmergency);
+    if (!_forceEmergency) {
+      _emergencyStop = v;
+      zeroAngular();
+      zeroLinear();
+      notifyListeners();
+    }
+  }
+
+  bool get forceEmergency => _forceEmergency;
+  set forceEmergency(bool v) {
+    _forceEmergency = v;
   }
 }

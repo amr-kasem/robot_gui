@@ -1,11 +1,14 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
+import 'package:provider/provider.dart';
 import 'package:robot_gui/screens/log/log_screen.dart';
 import 'package:robot_gui/screens/terminal/terminal_screen.dart';
 import 'package:robot_gui/widgets/title_bar/battery_level.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
+import '../providers/ros_client.dart';
 import '../widgets/title_bar/connection_status.dart';
+import '../widgets/title_bar/emergency_button.dart';
 import 'home/home_screen.dart';
 import 'settings/settings_screen.dart';
 import '../widgets/title_bar/window_buttons.dart';
@@ -38,6 +41,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
 
   @override
   Widget build(BuildContext context) {
+    final _ros = Provider.of<ROSClient>(context, listen: false);
+
     return NavigationView(
       key: viewKey,
       pane: NavigationPane(
@@ -73,6 +78,12 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         onChanged: (i) => setState(
           () {
             index = i;
+            if (index != 0) {
+              _ros.isEmergency = true;
+              _ros.forceEmergency = true;
+            } else {
+              _ros.forceEmergency = false;
+            }
           },
         ),
       ),
@@ -97,6 +108,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
                     Spacer(),
+                    EmergencyButton(),
+                    SizedBox(width: 15),
                     BatteryLevel(),
                     SizedBox(width: 15),
                     ConnectionStatus(),
