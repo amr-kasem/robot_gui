@@ -1,5 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
+import 'package:robot_gui/screens/log/log_screen.dart';
+import 'package:robot_gui/screens/terminal/terminal_screen.dart';
 import 'package:robot_gui/widgets/title_bar/battery_level.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -56,6 +58,14 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
             title: const Text('Navigation.Main').tr(),
           ),
           PaneItem(
+            icon: const Icon(FluentIcons.command_prompt),
+            title: const Text('Navigation.Terminal').tr(),
+          ),
+          PaneItem(
+            icon: const Icon(FluentIcons.file_system),
+            title: const Text('Navigation.Log').tr(),
+          ),
+          PaneItem(
             icon: const Icon(FluentIcons.settings),
             title: const Text('Navigation.Settings').tr(),
           ),
@@ -100,6 +110,8 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         index: index,
         children: [
           const HomeScreen(),
+          const TerminalScreen(),
+          const LogScreen(),
           SettingsScreen(updateView: updateView),
         ],
       ),

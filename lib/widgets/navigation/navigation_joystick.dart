@@ -16,13 +16,13 @@ class _NavigationJoystickState extends State<NavigationJoystick> {
   Widget build(BuildContext context) {
     return Align(
       alignment: AlignmentDirectional.bottomStart,
-      child: Padding(
-        padding: const EdgeInsets.all(15),
-        child: SizedBox(
-          height: 100,
-          width: 100,
-          child: material.Material(
-            color: Colors.transparent,
+      child: SizedBox(
+        height: 200,
+        width: 200,
+        child: material.Material(
+          color: Colors.transparent,
+          child: Padding(
+            padding: const EdgeInsets.all(40),
             child: Directionality(
               textDirection: TextDirection.ltr,
               child: Joystick(

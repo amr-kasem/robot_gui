@@ -8,6 +8,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.3.0"
+  asn1lib:
+    dependency: transitive
+    description:
+      name: asn1lib
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.0"
   async:
     dependency: transitive
     description:
@@ -99,6 +106,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.15.0"
+  convert:
+    dependency: transitive
+    description:
+      name: convert
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.0.1"
   crypto:
     dependency: transitive
     description:
@@ -113,6 +127,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
+  dart_console:
+    dependency: transitive
+    description:
+      name: dart_console
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
+  dartssh2:
+    dependency: "direct main"
+    description:
+      name: dartssh2
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.6.1"
   dbus:
     dependency: transitive
     description:
@@ -134,6 +162,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.0.2"
+  equatable:
+    dependency: transitive
+    description:
+      name: equatable
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.3"
   fake_async:
     dependency: transitive
     description:
@@ -385,10 +420,24 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.4.0"
+  pinenacl:
+    dependency: transitive
+    description:
+      name: pinenacl
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.4"
   platform:
     dependency: transitive
     description:
       name: platform
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.0"
+  platform_info:
+    dependency: transitive
+    description:
+      name: platform_info
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.0"
@@ -399,6 +448,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.2"
+  pointycastle:
+    dependency: transitive
+    description:
+      name: pointycastle
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.5.2"
   positioned_tap_detector_2:
     dependency: transitive
     description:
@@ -798,6 +854,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.3.1"
+  xterm:
+    dependency: "direct main"
+    description:
+      name: xterm
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.6.0"
 sdks:
   dart: ">=2.16.2 <3.0.0"
   flutter: ">=2.10.0"

@@ -24,6 +24,7 @@ bool get isDesktop {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await EasyLocalization.ensureInitialized();
 
   if (kIsWeb ||
@@ -76,6 +77,18 @@ class RightIntent extends Intent {
   const RightIntent();
 }
 
+class BreakIntent extends Intent {
+  const BreakIntent();
+}
+
+class BreakLinearIntent extends Intent {
+  const BreakLinearIntent();
+}
+
+class BreakAngularIntent extends Intent {
+  const BreakAngularIntent();
+}
+
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -92,6 +105,9 @@ class MyApp extends StatelessWidget {
           LogicalKeySet(LogicalKeyboardKey.arrowDown): const BackwardIntent(),
           LogicalKeySet(LogicalKeyboardKey.arrowLeft): const LeftIntent(),
           LogicalKeySet(LogicalKeyboardKey.arrowRight): const RightIntent(),
+          LogicalKeySet(LogicalKeyboardKey.space): const BreakIntent(),
+          LogicalKeySet(LogicalKeyboardKey.keyX): const BreakLinearIntent(),
+          LogicalKeySet(LogicalKeyboardKey.keyZ): const BreakAngularIntent(),
         },
         localizationsDelegates: context.localizationDelegates,
         supportedLocales: context.supportedLocales,
@@ -101,20 +117,34 @@ class MyApp extends StatelessWidget {
         home: const MyHomePage(),
       ),
       builder: (ctx, child) {
+        final _ros = Provider.of<ROSClient>(ctx, listen: false);
         return Actions(
           child: child!,
           actions: <Type, Action<Intent>>{
             ForwardIntent: CallbackAction<ForwardIntent>(
-              onInvoke: (ForwardIntent intent) => print('arrow up'),
+              onInvoke: (ForwardIntent intent) => _ros.linearUp(),
             ),
             BackwardIntent: CallbackAction<BackwardIntent>(
-              onInvoke: (BackwardIntent intent) => print('arrow down'),
+              onInvoke: (BackwardIntent intent) => _ros.linearDown(),
             ),
             LeftIntent: CallbackAction<LeftIntent>(
-              onInvoke: (LeftIntent intent) => print('arrow left'),
+              onInvoke: (LeftIntent intent) => _ros.angularUp(),
             ),
             RightIntent: CallbackAction<RightIntent>(
-              onInvoke: (RightIntent intent) => print('arrow right'),
+              onInvoke: (RightIntent intent) => _ros.angularDown(),
+            ),
+            BreakIntent: CallbackAction<BreakIntent>(
+              onInvoke: (BreakIntent intent) {
+                _ros.zeroAngular();
+                _ros.zeroLinear();
+                return;
+              },
+            ),
+            BreakLinearIntent: CallbackAction<BreakLinearIntent>(
+              onInvoke: (BreakLinearIntent intent) => _ros.zeroLinear(),
+            ),
+            BreakAngularIntent: CallbackAction<BreakAngularIntent>(
+              onInvoke: (BreakAngularIntent intent) => _ros.zeroAngular(),
             ),
           },
         );

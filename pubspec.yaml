@@ -54,6 +54,8 @@ dependencies:
   webview_flutter: ^3.0.2
   joystick: ^1.1.0
   syncfusion_flutter_gauges: ^20.1.50
+  dartssh2: ^2.6.1
+  xterm: ^2.6.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
