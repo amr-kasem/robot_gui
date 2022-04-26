@@ -6,12 +6,26 @@ class MotionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Align(
+    return Align(
       alignment: AlignmentDirectional.topStart,
       child: SizedBox(
         height: 150,
         width: 150,
-        child: MotionVisualizer(),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: RadialGradient(
+              colors: [
+                Colors.black.withOpacity(0.2),
+                Colors.black.withOpacity(0.2),
+                Colors.black.withOpacity(0.2),
+                Colors.black.withOpacity(0.2),
+                Colors.transparent,
+              ],
+            ),
+          ),
+          child: const MotionVisualizer(),
+        ),
       ),
     );
   }

@@ -89,12 +89,12 @@ class OpenPainter extends CustomPainter {
       paint1,
     );
     canvas.drawLine(
-      Offset(x + r, y),
+      Offset(x + r - 7, y),
       Offset(x + r + 15, y),
       paint1,
     );
     canvas.drawLine(
-      Offset(x - r, y),
+      Offset(x - r + 7, y),
       Offset(x - r - 15, y),
       paint1,
     );

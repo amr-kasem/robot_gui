@@ -20,35 +20,51 @@ class _NavigationJoystickState extends State<NavigationJoystick> {
     return Align(
       alignment: AlignmentDirectional.bottomStart,
       child: SizedBox(
-        height: 200,
-        width: 200,
+        height: 150,
+        width: 150,
         child: material.Material(
           color: Colors.transparent,
           child: Padding(
-            padding: const EdgeInsets.all(40),
-            child: Directionality(
-              textDirection: TextDirection.ltr,
-              child: Joystick(
-                size: 100,
-                isDraggable: false,
-                iconColor: Colors.white,
-                backgroundColor: Colors.black,
-                opacity: 0.3,
-                joystickMode: JoystickModes.all,
-                onUpPressed: () {
-                  _rosClient.linearUp();
-                },
-                onLeftPressed: () {
-                  _rosClient.angularUp();
-                },
-                onRightPressed: () {
-                  _rosClient.angularDown();
-                },
-                onDownPressed: () {
-                  _rosClient.linearDown();
-                },
-                onPressed: (_direction) {},
-              ),
+            padding: const EdgeInsets.all(25.0),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                Directionality(
+                  textDirection: TextDirection.ltr,
+                  child: Joystick(
+                    size: 100,
+                    isDraggable: false,
+                    iconColor: Colors.white,
+                    backgroundColor: Colors.black,
+                    opacity: 0.3,
+                    joystickMode: JoystickModes.all,
+                    onUpPressed: () {
+                      _rosClient.linearUp();
+                    },
+                    onLeftPressed: () {
+                      _rosClient.angularUp();
+                    },
+                    onRightPressed: () {
+                      _rosClient.angularDown();
+                    },
+                    onDownPressed: () {
+                      _rosClient.linearDown();
+                    },
+                    onPressed: (_direction) {},
+                  ),
+                ),
+                material.IconButton(
+                  iconSize: 20,
+                  splashRadius: 15,
+                  onPressed: () {
+                    _rosClient.zeroAngular();
+                    _rosClient.zeroLinear();
+                  },
+                  icon: Icon(
+                    material.Icons.stop_circle,
+                  ),
+                )
+              ],
             ),
           ),
         ),

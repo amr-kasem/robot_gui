@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_mjpeg/flutter_mjpeg.dart';
 import 'package:fluent_ui/fluent_ui.dart';
@@ -23,9 +25,9 @@ class _CameraViewerState extends State<CameraViewer> {
       ),
       isLive: true,
       timeout: const Duration(seconds: 2),
-
       error: (ctx, e, v) {
         print(e);
+
         return TextButton(
           onPressed: () => setState(() {}),
           child: Container(

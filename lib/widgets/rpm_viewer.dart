@@ -8,8 +8,7 @@ class RMPViewer extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  Widget _getRadialGauge(BuildContext context) {
-    final _ros = Provider.of<ROSClient>(context, listen: false);
+  Widget _getRadialGauge(BuildContext context, _ros) {
     return StreamBuilder(
         stream: _ros.cmdVelFB,
         builder: (context, snapshot) {
@@ -103,8 +102,8 @@ class RMPViewer extends StatelessWidget {
                       isInversed: true,
                       maximum: 1,
                       radiusFactor: 0.5,
-                      centerY: 0.75,
-                      centerX: isRtl ? 0.85 : 0.15,
+                      centerY: 0.76,
+                      centerX: isRtl ? 0.84 : 0.26,
                       labelOffset: 5,
                       axisLineStyle: AxisLineStyle(
                         thickness: 5,
@@ -173,14 +172,78 @@ class RMPViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final _ros = Provider.of<ROSClient>(context, listen: false);
+
     return Align(
       alignment: AlignmentDirectional.bottomEnd,
       child: Padding(
-        padding: const EdgeInsets.all(15),
+        padding: const EdgeInsets.all(5),
         child: SizedBox(
           height: 300,
           width: 450,
-          child: _getRadialGauge(context),
+          child: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(7.0),
+                child: Align(
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white.withOpacity(0.2),
+                    ),
+                    height: double.infinity,
+                    width: 300,
+                  ),
+                ),
+              ),
+              Align(
+                alignment: AlignmentDirectional.bottomStart,
+                child: Container(
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white.withOpacity(0.2),
+                  ),
+                  height: 145,
+                  width: 145,
+                ),
+              ),
+              _getRadialGauge(context, _ros),
+              GestureDetector(
+                onDoubleTap: () {
+                  _ros.zeroLinear();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(7.0),
+                  child: Align(
+                    alignment: AlignmentDirectional.centerEnd,
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      height: double.infinity,
+                      width: 300,
+                    ),
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onDoubleTap: () {
+                  _ros.zeroAngular();
+                },
+                child: Align(
+                  alignment: AlignmentDirectional.bottomStart,
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      shape: BoxShape.circle,
+                    ),
+                    height: 145,
+                    width: 145,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
