@@ -21,7 +21,7 @@ class _MapViewState extends State<MapView> {
   var lat = 30.2, long = 31.2, yaw = 0.2;
 
   bool isTracking = true;
-
+  bool newPath = false;
   @override
   Widget build(BuildContext context) {
     final _navigation = Provider.of<NavigationProvider>(context);
@@ -32,91 +32,101 @@ class _MapViewState extends State<MapView> {
     } catch (e) {}
     return Stack(
       children: [
-        FlutterMap(
-          mapController: _mapController,
-          options: MapOptions(
-            center: LatLng(lat, long),
-            zoom: 18,
-            minZoom: 9,
-            maxZoom: 18,
-            allowPanning: true,
-            onPositionChanged: (_, _self) {
-              if (_self) {
+        MouseRegion(
+          cursor:
+              newPath ? SystemMouseCursors.precise : SystemMouseCursors.basic,
+          child: FlutterMap(
+            mapController: _mapController,
+            options: MapOptions(
+              center: LatLng(lat, long),
+              zoom: 18,
+              minZoom: 9,
+              maxZoom: 18,
+              allowPanning: true,
+              onPositionChanged: (_, _self) {
+                if (_self) {
+                  setState(() {
+                    isTracking = false;
+                  });
+                }
+              },
+              onTap: (_, _w) {
+                _navigation.addWayPoint(
+                  WayPoint(
+                    latitude: _w.latitude,
+                    longitude: _w.longitude,
+                  ),
+                );
+              },
+              onLongPress: (_, _w) {
                 setState(() {
-                  isTracking = false;
+                  newPath = true;
                 });
-              }
-            },
-            onLongPress: (_, _w) {
-              _navigation.currentTarget = WayPoint(
-                latitude: _w.latitude,
-                longitude: _w.longitude,
-              );
-              _navigation.isNavigating = true;
-            },
-          ),
-          layers: [
-            TileLayerOptions(
-              urlTemplate: "http://map.localhost/{z}/{x}/{y}.png",
+              },
             ),
-            MarkerLayerOptions(
-              markers: [
-                Marker(
-                  width: 40.0,
-                  height: 40.0,
-                  point: LatLng(lat, long),
-                  builder: (ctx) => Transform.rotate(
-                    angle: yaw,
-                    child: Icon(
-                      material.Icons.navigation,
-                      color: Colors.blue.normal,
-                      size: 40,
+            layers: [
+              TileLayerOptions(
+                urlTemplate: "http://map.localhost/{z}/{x}/{y}.png",
+              ),
+              MarkerLayerOptions(
+                markers: [
+                  Marker(
+                    width: 40.0,
+                    height: 40.0,
+                    point: LatLng(lat, long),
+                    builder: (ctx) => Transform.rotate(
+                      angle: yaw,
+                      child: Icon(
+                        material.Icons.navigation,
+                        color: Colors.blue.normal,
+                        size: 40,
+                      ),
                     ),
                   ),
-                ),
-                if (_navigation.currentTarget != null)
-                  Marker(
-                    anchorPos: AnchorPos.align(AnchorAlign.top),
-                    width: 50.0,
-                    height: 50.0,
-                    point: LatLng(
-                      _navigation.currentTarget!.latitude,
-                      _navigation.currentTarget!.longitude,
-                    ),
-                    builder: (ctx) => Stack(
-                      alignment: Alignment.bottomCenter,
-                      children: [
-                        Icon(
-                          material.Icons.location_on,
-                          color: Colors.blue.normal,
-                          size: 40,
-                        ),
-                        Align(
-                          alignment: Alignment.topRight,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.red.withOpacity(0.5),
-                              shape: BoxShape.circle,
-                            ),
-                            child: IconButton(
-                              icon: const Icon(
-                                FluentIcons.remove,
-                                size: 10,
-                                color: Colors.white,
+                  ..._navigation.upComing.map(
+                    (e) => Marker(
+                      anchorPos: AnchorPos.align(AnchorAlign.top),
+                      width: 50.0,
+                      height: 50.0,
+                      point: LatLng(
+                        e.latitude,
+                        e.longitude,
+                      ),
+                      builder: (ctx) => Stack(
+                        alignment: Alignment.bottomCenter,
+                        children: [
+                          Icon(
+                            material.Icons.location_on,
+                            color: Colors.blue.normal,
+                            size: 40,
+                          ),
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.red.withOpacity(0.5),
+                                shape: BoxShape.circle,
                               ),
-                              onPressed: () {
-                                _navigation.isNavigating = false;
-                                _navigation.currentTarget = null;
-                              },
+                              child: IconButton(
+                                icon: const Icon(
+                                  FluentIcons.remove,
+                                  size: 10,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () {
+                                  _navigation.deleteWayPoint(e);
+                                },
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-              ],
-            ),
-          ],
+                ],
+              ),
+            ],
+          ),
         ),
         Align(
           alignment: AlignmentDirectional.bottomStart,
@@ -152,91 +162,101 @@ class _MapViewState extends State<MapView> {
                   color: Colors.white.withOpacity(0.4),
                 ),
                 padding: const EdgeInsets.all(5),
-                child: const Icon(
-                  FluentIcons.add,
-                  size: 24,
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 250),
+                  child: Icon(
+                    newPath ? FluentIcons.check_mark : FluentIcons.add,
+                    key: UniqueKey(),
+                    size: 24,
+                  ),
                 ),
               ),
               onPressed: () async {
-                var _p = await showDialog(
-                  context: context,
-                  builder: (ctx) {
-                    final _formKey = GlobalKey<FormState>();
-                    double? _lat, _lng;
-                    return ContentDialog(
-                      title: Text('Input Location Data'),
-                      content: Form(
-                        key: _formKey,
-                        child: Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text('دائرة عرض'),
-                              TextFormBox(
-                                placeholder: "30.2",
-                                onSaved: (v) {
-                                  _lat = double.parse(v!);
-                                },
-                              ),
-                              Text('خط طول'),
-                              TextFormBox(
-                                placeholder: "31.2",
-                                onSaved: (v) {
-                                  _lng = double.parse(v!);
-                                },
-                              ),
-                            ],
+                if (newPath) {
+                  setState(() {
+                    newPath = false;
+                  });
+                } else {
+                  var _p = await showDialog(
+                    context: context,
+                    builder: (ctx) {
+                      final _formKey = GlobalKey<FormState>();
+                      double? _lat, _lng;
+                      return ContentDialog(
+                        title: Text('Input Location Data'),
+                        content: Form(
+                          key: _formKey,
+                          child: Padding(
+                            padding: const EdgeInsets.all(15),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text('دائرة عرض'),
+                                TextFormBox(
+                                  placeholder: "30.2",
+                                  onSaved: (v) {
+                                    _lat = double.parse(v!);
+                                  },
+                                ),
+                                Text('خط طول'),
+                                TextFormBox(
+                                  placeholder: "31.2",
+                                  onSaved: (v) {
+                                    _lng = double.parse(v!);
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                      actions: [
-                        FilledButton(
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Icon(FluentIcons.add),
-                              SizedBox(width: 10),
-                              Text('اضافة'),
-                            ],
+                        actions: [
+                          FilledButton(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Icon(FluentIcons.add),
+                                SizedBox(width: 10),
+                                Text('اضافة'),
+                              ],
+                            ),
+                            onPressed: () {
+                              _formKey.currentState!.save();
+                              Navigator.of(ctx).pop(
+                                {
+                                  'Latitude': _lat,
+                                  'Longitude': _lng,
+                                },
+                              );
+                            },
                           ),
-                          onPressed: () {
-                            _formKey.currentState!.save();
-                            Navigator.of(ctx).pop(
-                              {
-                                'Latitude': _lat,
-                                'Longitude': _lng,
-                              },
-                            );
-                          },
-                        ),
-                        Button(
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              // Icon(FluentIcons.add),
-                              Text('إلغاء'),
-                            ],
-                          ),
-                          onPressed: () {
-                            // _formKey.currentState!.save();
-                            Navigator.of(ctx).pop();
-                          },
-                        )
-                      ],
-                    );
-                  },
-                );
-                if (_p != null) {
-                  _p = _p as Map;
-                  _navigation.currentTarget = WayPoint(
-                    latitude: _p['Latitude'],
-                    longitude: _p['Longitude'],
+                          Button(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                // Icon(FluentIcons.add),
+                                Text('إلغاء'),
+                              ],
+                            ),
+                            onPressed: () {
+                              // _formKey.currentState!.save();
+                              Navigator.of(ctx).pop();
+                            },
+                          )
+                        ],
+                      );
+                    },
                   );
-                  _navigation.isNavigating = true;
+                  if (_p != null) {
+                    _p = _p as Map;
+                    _navigation.currentTarget = WayPoint(
+                      latitude: _p['Latitude'],
+                      longitude: _p['Longitude'],
+                    );
+                    _navigation.isNavigating = true;
+                  }
                 }
               },
             ),

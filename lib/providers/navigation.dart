@@ -26,10 +26,21 @@ class NavigationProvider with ChangeNotifier {
   WayPoint? _currentTarget;
 
   WayPoint? get currentTarget => _currentTarget;
-
+  List<WayPoint> get upComing =>
+      _wayPoints.where((element) => !element.reached).toList();
   set currentTarget(WayPoint? _p) {
     _currentTarget = _p;
     notifyListeners();
+  }
+
+  void deleteWayPoint(WayPoint p) {
+    _wayPoints.remove(p);
+  }
+
+  void addWayPoint(WayPoint p, {int? index}) {
+    if (index == null) {
+      _wayPoints.add(p);
+    }
   }
 
   bool get isNavigating => _isNavigating;

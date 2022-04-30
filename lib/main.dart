@@ -117,7 +117,11 @@ class MyApp extends StatelessWidget {
           LogicalKeySet(LogicalKeyboardKey.arrowRight): const RightIntent(),
           LogicalKeySet(LogicalKeyboardKey.space): const BreakIntent(),
           LogicalKeySet(LogicalKeyboardKey.keyX): const BreakLinearIntent(),
+          LogicalKeySet(const LogicalKeyboardKey(1569)):
+              const BreakLinearIntent(),
           LogicalKeySet(LogicalKeyboardKey.keyZ): const BreakAngularIntent(),
+          LogicalKeySet(const LogicalKeyboardKey(1572)):
+              const BreakLinearIntent(),
           LogicalKeySet(LogicalKeyboardKey.escape): const FreeEmergencyIntent(),
         },
         localizationsDelegates: context.localizationDelegates,
