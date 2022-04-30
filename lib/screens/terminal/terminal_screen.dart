@@ -24,7 +24,7 @@ class _TerminalScreenState extends State<TerminalScreen> {
             _lastCount = _lastCount + 1;
 
             _terminals['Terminal $_lastCount'] = const TerminalTab();
-            currentIndex = _lastCount;
+            currentIndex = _terminals.length - 1;
           });
         },
         bodies: _terminals.values.toList(),

@@ -6,8 +6,8 @@ class MotionVisualizer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double roll = -math.pi / 10;
-    double pitch = -math.pi / 4;
+    double roll = 0;
+    double pitch = 0;
     return Padding(
       padding: const EdgeInsets.all(15),
       child: LayoutBuilder(builder: (context, constraints) {

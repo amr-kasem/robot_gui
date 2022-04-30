@@ -27,7 +27,7 @@ class NavigationProvider with ChangeNotifier {
 
   WayPoint? get currentTarget => _currentTarget;
 
-  set currentTargrt(WayPoint _p) {
+  set currentTarget(WayPoint? _p) {
     _currentTarget = _p;
     notifyListeners();
   }
@@ -35,9 +35,9 @@ class NavigationProvider with ChangeNotifier {
   bool get isNavigating => _isNavigating;
   set isNavigating(bool v) {
     print("should be solved");
-    // if (_currentTarget == null) {
-    //   return;
-    // }
+    if (_currentTarget == null) {
+      return;
+    }
     _isNavigating = v;
     notifyListeners();
   }

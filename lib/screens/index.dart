@@ -1,6 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
+import 'package:robot_gui/screens/autonomous/autonomous_screen.dart';
 import 'package:robot_gui/screens/log/log_screen.dart';
 import 'package:robot_gui/screens/terminal/terminal_screen.dart';
 import 'package:robot_gui/widgets/title_bar/battery_level.dart';
@@ -12,6 +13,8 @@ import '../widgets/title_bar/emergency_button.dart';
 import 'home/home_screen.dart';
 import 'settings/settings_screen.dart';
 import '../widgets/title_bar/window_buttons.dart';
+import 'package:flutter/material.dart' as material;
+import 'dart:math' as math;
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -60,6 +63,12 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         items: [
           PaneItem(
             icon: const Icon(FluentIcons.home),
+            title: const Text('Navigation.Main').tr(),
+          ),
+          PaneItem(
+            icon: Transform.rotate(
+                angle: math.pi / 4,
+                child: const Icon(material.Icons.navigation_outlined)),
             title: const Text('Navigation.Main').tr(),
           ),
           PaneItem(
@@ -123,6 +132,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
         index: index,
         children: [
           const HomeScreen(),
+          const AutonomousScreen(),
           const TerminalScreen(),
           const LogScreen(),
           SettingsScreen(updateView: updateView),

@@ -119,7 +119,7 @@ class _MapViewState extends State<MapView> {
           ],
         ),
         Align(
-          alignment: AlignmentDirectional.bottomEnd,
+          alignment: AlignmentDirectional.bottomStart,
           child: Padding(
             padding: const EdgeInsets.all(15),
             child: ToggleButton(
@@ -142,7 +142,7 @@ class _MapViewState extends State<MapView> {
           ),
         ),
         Align(
-          alignment: material.AlignmentDirectional.topStart,
+          alignment: material.AlignmentDirectional.topEnd,
           child: Padding(
             padding: const EdgeInsets.all(10.0),
             child: IconButton(

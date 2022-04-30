@@ -6,6 +6,8 @@ class WayPoint {
   bool reached = false;
   double? yaw;
 
+  WayPoint({required this.latitude, required this.longitude});
+
   Map<String, dynamic> toJson() {
     return {
       'latitude': latitude,
