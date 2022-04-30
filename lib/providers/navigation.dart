@@ -35,12 +35,14 @@ class NavigationProvider with ChangeNotifier {
 
   void deleteWayPoint(WayPoint p) {
     _wayPoints.remove(p);
+    notifyListeners();
   }
 
   void addWayPoint(WayPoint p, {int? index}) {
     if (index == null) {
       _wayPoints.add(p);
     }
+    notifyListeners();
   }
 
   bool get isNavigating => _isNavigating;

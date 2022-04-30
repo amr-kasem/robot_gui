@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:robot_gui/providers/navigation.dart';
 
 import '../../../models/way_point.dart';
+import '../../../widgets/navigation/way_point_widget.dart';
 
 class MapView extends StatefulWidget {
   const MapView({Key? key}) : super(key: key);
@@ -32,100 +33,86 @@ class _MapViewState extends State<MapView> {
     } catch (e) {}
     return Stack(
       children: [
-        MouseRegion(
-          cursor:
-              newPath ? SystemMouseCursors.precise : SystemMouseCursors.basic,
-          child: FlutterMap(
-            mapController: _mapController,
-            options: MapOptions(
-              center: LatLng(lat, long),
-              zoom: 18,
-              minZoom: 9,
-              maxZoom: 18,
-              allowPanning: true,
-              onPositionChanged: (_, _self) {
-                if (_self) {
+        GestureDetector(
+          onSecondaryTap: () {
+            setState(() {
+              newPath = false;
+            });
+          },
+          child: MouseRegion(
+            cursor:
+                newPath ? SystemMouseCursors.precise : SystemMouseCursors.basic,
+            child: FlutterMap(
+              mapController: _mapController,
+              options: MapOptions(
+                center: LatLng(lat, long),
+                zoom: 18,
+                minZoom: 9,
+                maxZoom: 18,
+                allowPanning: true,
+                onPositionChanged: (_, _self) {
+                  if (_self) {
+                    setState(() {
+                      isTracking = false;
+                    });
+                  }
+                },
+                onTap: (_, _w) {
+                  if (newPath) {
+                    _navigation.addWayPoint(
+                      WayPoint(
+                        latitude: _w.latitude,
+                        longitude: _w.longitude,
+                      ),
+                    );
+                  }
+                },
+                onLongPress: (_, _w) {
                   setState(() {
-                    isTracking = false;
+                    newPath = true;
                   });
-                }
-              },
-              onTap: (_, _w) {
-                _navigation.addWayPoint(
-                  WayPoint(
-                    latitude: _w.latitude,
-                    longitude: _w.longitude,
-                  ),
-                );
-              },
-              onLongPress: (_, _w) {
-                setState(() {
-                  newPath = true;
-                });
-              },
-            ),
-            layers: [
-              TileLayerOptions(
-                urlTemplate: "http://map.localhost/{z}/{x}/{y}.png",
+                },
               ),
-              MarkerLayerOptions(
-                markers: [
-                  Marker(
-                    width: 40.0,
-                    height: 40.0,
-                    point: LatLng(lat, long),
-                    builder: (ctx) => Transform.rotate(
-                      angle: yaw,
-                      child: Icon(
-                        material.Icons.navigation,
-                        color: Colors.blue.normal,
-                        size: 40,
+              layers: [
+                TileLayerOptions(
+                  urlTemplate: "http://map.localhost/{z}/{x}/{y}.png",
+                ),
+                MarkerLayerOptions(
+                  markers: [
+                    Marker(
+                      width: 40.0,
+                      height: 40.0,
+                      point: LatLng(lat, long),
+                      builder: (ctx) => Transform.rotate(
+                        angle: yaw,
+                        child: Icon(
+                          material.Icons.navigation,
+                          color: Colors.blue.normal,
+                          size: 40,
+                        ),
                       ),
                     ),
-                  ),
-                  ..._navigation.upComing.map(
-                    (e) => Marker(
-                      anchorPos: AnchorPos.align(AnchorAlign.top),
-                      width: 50.0,
-                      height: 50.0,
-                      point: LatLng(
-                        e.latitude,
-                        e.longitude,
-                      ),
-                      builder: (ctx) => Stack(
-                        alignment: Alignment.bottomCenter,
-                        children: [
-                          Icon(
-                            material.Icons.location_on,
-                            color: Colors.blue.normal,
-                            size: 40,
-                          ),
-                          Align(
-                            alignment: Alignment.topRight,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.red.withOpacity(0.5),
-                                shape: BoxShape.circle,
-                              ),
-                              child: IconButton(
-                                icon: const Icon(
-                                  FluentIcons.remove,
-                                  size: 10,
-                                  color: Colors.white,
-                                ),
-                                onPressed: () {
-                                  _navigation.deleteWayPoint(e);
-                                },
-                              ),
+                    ..._navigation.upComing.asMap().entries.map(
+                          (e) => Marker(
+                            anchorPos: AnchorPos.align(AnchorAlign.top),
+                            width: 50.0,
+                            height: 50.0,
+                            point: LatLng(
+                              e.value.latitude,
+                              e.value.longitude,
+                            ),
+                            builder: (ctx) => WayPointWidget(
+                              editable: newPath,
+                              id: e.key + 1,
+                              onDelete: () =>
+                                  _navigation.deleteWayPoint(e.value),
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+                        ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
         Align(
