@@ -2,8 +2,14 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:contextmenu/contextmenu.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import 'package:robot_gui/providers/map_view.dart';
 
-class WayPointWidget extends StatefulWidget {
+class HideMenuIntent extends Intent {
+  const HideMenuIntent();
+}
+
+class WayPointWidget extends StatelessWidget {
   const WayPointWidget({
     Key? key,
     this.editable = false,
@@ -18,20 +24,14 @@ class WayPointWidget extends StatefulWidget {
   final double lat, lng;
 
   @override
-  State<WayPointWidget> createState() => _WayPointWidgetState();
-}
-
-class HideMenuIntent extends Intent {
-  const HideMenuIntent();
-}
-
-class _WayPointWidgetState extends State<WayPointWidget> {
-  bool hover = false;
-  @override
   Widget build(BuildContext context) {
-    var _marker = AnimatedScale(
-      duration: const Duration(milliseconds: 150),
-      scale: hover ? 1.1 : 1,
+    final _provider = Provider.of<MapViewProvider>(context, listen: false);
+    var _marker = Consumer<MapViewProvider>(
+      builder: (ctx, _p, c) => AnimatedScale(
+        duration: const Duration(milliseconds: 100),
+        scale: _p.selectedIndex == id ? 1.2 : 1,
+        child: c,
+      ),
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: [
@@ -48,7 +48,7 @@ class _WayPointWidgetState extends State<WayPointWidget> {
                           width: 80,
                           child: Text('خط طول :'),
                         ),
-                        Text(widget.lng.toStringAsFixed(7)),
+                        Text(lng.toStringAsFixed(7)),
                       ],
                     ),
                     Row(
@@ -58,7 +58,7 @@ class _WayPointWidgetState extends State<WayPointWidget> {
                           width: 80,
                           child: Text('دائرة عرض :'),
                         ),
-                        Text(widget.lat.toStringAsFixed(7)),
+                        Text(lat.toStringAsFixed(7)),
                       ],
                     ),
                   ],
@@ -71,7 +71,7 @@ class _WayPointWidgetState extends State<WayPointWidget> {
               size: 40,
             ),
           ),
-          if (widget.editable)
+          if (editable)
             Align(
               alignment: Alignment.topRight,
               child: Container(
@@ -86,7 +86,7 @@ class _WayPointWidgetState extends State<WayPointWidget> {
                     color: Colors.white,
                   ),
                   onPressed: () {
-                    widget.onDelete();
+                    onDelete();
                   },
                 ),
               ),
@@ -96,7 +96,7 @@ class _WayPointWidgetState extends State<WayPointWidget> {
             child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
-                widget.id.toString(),
+                (id + 1).toString(),
                 style: const TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.bold,
@@ -110,17 +110,13 @@ class _WayPointWidgetState extends State<WayPointWidget> {
     );
     return MouseRegion(
       onEnter: (event) {
-        setState(() {
-          hover = true;
-        });
+        _provider.selectedIndex = id;
       },
       onExit: (event) {
-        setState(() {
-          hover = false;
-        });
+        _provider.selectedIndex = null;
       },
       cursor: SystemMouseCursors.basic,
-      child: widget.editable
+      child: editable
           ? ContextMenuArea(
               width: 180,
               verticalPadding: 20,

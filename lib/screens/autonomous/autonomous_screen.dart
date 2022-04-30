@@ -1,4 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:provider/provider.dart';
+import 'package:robot_gui/providers/map_view.dart';
 import '../../widgets/monitor/camera.dart';
 import '../../widgets/monitor/rviz.dart';
 import 'widgets/map.dart';
@@ -11,8 +13,11 @@ class AutonomousScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const Flexible(
-          child: MapView(),
+        Flexible(
+          child: ChangeNotifierProvider(
+            create: (_) => MapViewProvider(),
+            child: const MapView(),
+          ),
           flex: 4,
         ),
         const Divider(direction: Axis.vertical),
