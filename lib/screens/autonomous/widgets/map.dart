@@ -104,6 +104,8 @@ class _MapViewState extends State<MapView> {
                             builder: (ctx) => WayPointWidget(
                               editable: newPath,
                               id: e.key + 1,
+                              lat: e.value.latitude,
+                              lng: e.value.longitude,
                               onDelete: () =>
                                   _navigation.deleteWayPoint(e.value),
                             ),
@@ -140,115 +142,112 @@ class _MapViewState extends State<MapView> {
         ),
         Align(
           alignment: material.AlignmentDirectional.topEnd,
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: IconButton(
-              icon: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  color: Colors.white.withOpacity(0.4),
-                ),
-                padding: const EdgeInsets.all(5),
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 250),
-                  child: Icon(
-                    newPath ? FluentIcons.check_mark : FluentIcons.add,
-                    key: UniqueKey(),
-                    size: 24,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                child: IconButton(
+                  icon: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: Colors.white.withOpacity(0.4),
+                    ),
+                    padding: const EdgeInsets.all(5),
+                    child: const Icon(
+                      FluentIcons.settings,
+                      size: 24,
+                    ),
                   ),
+                  onPressed: () {},
                 ),
               ),
-              onPressed: () async {
-                if (newPath) {
-                  setState(() {
-                    newPath = false;
-                  });
-                } else {
-                  var _p = await showDialog(
-                    context: context,
-                    builder: (ctx) {
-                      final _formKey = GlobalKey<FormState>();
-                      double? _lat, _lng;
-                      return ContentDialog(
-                        title: Text('Input Location Data'),
-                        content: Form(
-                          key: _formKey,
-                          child: Padding(
-                            padding: const EdgeInsets.all(15),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text('دائرة عرض'),
-                                TextFormBox(
-                                  placeholder: "30.2",
-                                  onSaved: (v) {
-                                    _lat = double.parse(v!);
-                                  },
-                                ),
-                                Text('خط طول'),
-                                TextFormBox(
-                                  placeholder: "31.2",
-                                  onSaved: (v) {
-                                    _lng = double.parse(v!);
-                                  },
-                                ),
-                              ],
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: IconButton(
+                  icon: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: Colors.white.withOpacity(0.4),
+                    ),
+                    padding: const EdgeInsets.all(5),
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 250),
+                      child: Icon(
+                        newPath
+                            ? FluentIcons.check_mark
+                            : FluentIcons.edit_list_pencil,
+                        key: UniqueKey(),
+                        size: 24,
+                      ),
+                    ),
+                  ),
+                  onPressed: () async {
+                    if (newPath) {
+                      setState(() {
+                        newPath = false;
+                      });
+                    } else {
+                      setState(() {
+                        newPath = true;
+                      });
+                    }
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        if (newPath)
+          Align(
+            alignment: material.AlignmentDirectional.topStart,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: IconButton(
+                    icon: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: Colors.red.withOpacity(0.3),
+                      ),
+                      padding: const EdgeInsets.all(5),
+                      child: const Icon(
+                        FluentIcons.clear,
+                        size: 24,
+                        color: Colors.white,
+                      ),
+                    ),
+                    onPressed: () async {
+                      await showDialog(
+                        context: context,
+                        builder: (context) => ContentDialog(
+                          content: Text('are you sure?'),
+                          title: Text('Caution!'),
+                          actions: [
+                            Button(
+                              child: const Text('Actions.Buttons.yes').tr(),
+                              onPressed: () {
+                                Navigator.pop(context);
+                                _navigation.clearPath();
+                              },
                             ),
-                          ),
+                            FilledButton(
+                              child: const Text('Actions.Buttons.no').tr(),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
                         ),
-                        actions: [
-                          FilledButton(
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Icon(FluentIcons.add),
-                                SizedBox(width: 10),
-                                Text('اضافة'),
-                              ],
-                            ),
-                            onPressed: () {
-                              _formKey.currentState!.save();
-                              Navigator.of(ctx).pop(
-                                {
-                                  'Latitude': _lat,
-                                  'Longitude': _lng,
-                                },
-                              );
-                            },
-                          ),
-                          Button(
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                // Icon(FluentIcons.add),
-                                Text('إلغاء'),
-                              ],
-                            ),
-                            onPressed: () {
-                              // _formKey.currentState!.save();
-                              Navigator.of(ctx).pop();
-                            },
-                          )
-                        ],
                       );
                     },
-                  );
-                  if (_p != null) {
-                    _p = _p as Map;
-                    _navigation.currentTarget = WayPoint(
-                      latitude: _p['Latitude'],
-                      longitude: _p['Longitude'],
-                    );
-                    _navigation.isNavigating = true;
-                  }
-                }
-              },
+                  ),
+                ),
+              ],
             ),
-          ),
-        )
+          )
       ],
     );
   }

@@ -47,11 +47,15 @@ class NavigationProvider with ChangeNotifier {
 
   bool get isNavigating => _isNavigating;
   set isNavigating(bool v) {
-    print("should be solved");
     if (_currentTarget == null) {
       return;
     }
     _isNavigating = v;
+    notifyListeners();
+  }
+
+  void clearPath() {
+    _wayPoints.clear();
     notifyListeners();
   }
 

@@ -9,10 +9,13 @@ class WayPointWidget extends StatefulWidget {
     this.editable = false,
     required this.onDelete,
     required this.id,
+    required this.lat,
+    required this.lng,
   }) : super(key: key);
   final int id;
   final bool editable;
   final VoidCallback onDelete;
+  final double lat, lng;
 
   @override
   State<WayPointWidget> createState() => _WayPointWidgetState();
@@ -32,10 +35,41 @@ class _WayPointWidgetState extends State<WayPointWidget> {
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: [
-          Icon(
-            material.Icons.location_on,
-            color: Colors.blue.normal,
-            size: 40,
+          Tooltip(
+            richMessage: WidgetSpan(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(
+                          width: 80,
+                          child: Text('خط طول :'),
+                        ),
+                        Text(widget.lng.toStringAsFixed(7)),
+                      ],
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(
+                          width: 80,
+                          child: Text('دائرة عرض :'),
+                        ),
+                        Text(widget.lat.toStringAsFixed(7)),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            child: Icon(
+              material.Icons.location_on,
+              color: Colors.blue.normal,
+              size: 40,
+            ),
           ),
           if (widget.editable)
             Align(

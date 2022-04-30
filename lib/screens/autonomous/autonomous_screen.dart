@@ -11,7 +11,7 @@ class AutonomousScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Flexible(
+        const Flexible(
           child: MapView(),
           flex: 4,
         ),
@@ -25,15 +25,12 @@ class AutonomousScreen extends StatelessWidget {
                   alignment: Alignment.center,
                   children: const [
                     CameraViewer(),
-                    // NavigationJoystick(),
-                    // RMPViewer(),
                     MotionWidget(),
-                    // DirectionWidget(),
                   ],
                 ),
               ),
-              Divider(),
-              Expanded(
+              const Divider(),
+              const Expanded(
                 child: RvizView(),
               ),
             ],
