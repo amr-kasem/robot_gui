@@ -21,17 +21,30 @@ class NavigationProvider with ChangeNotifier {
 
   bool _isNavigating = false;
 
-  final List<WayPoint> _wayPoints = [];
+  bool get isNavigating => _isNavigating;
+  set isNavigating(bool v) {
+    if (_currentTarget == null) {
+      return;
+    }
+    _isNavigating = v;
+    notifyListeners();
+  }
 
-  WayPoint? _currentTarget;
+  int? _currentTarget;
 
-  WayPoint? get currentTarget => _currentTarget;
-  List<WayPoint> get upComing =>
-      _wayPoints.where((element) => !element.reached).toList();
-  set currentTarget(WayPoint? _p) {
+  WayPoint? get currentTarget {
+    if (_currentTarget != null) return _wayPoints[_currentTarget!];
+    return null;
+  }
+
+  void setCurrentTarget(int? _p) {
     _currentTarget = _p;
     notifyListeners();
   }
+
+  final List<WayPoint> _wayPoints = [];
+
+  List<WayPoint> get wayPoints => _wayPoints;
 
   void deleteWayPoint(WayPoint p) {
     _wayPoints.remove(p);
@@ -50,25 +63,20 @@ class NavigationProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  bool get isNavigating => _isNavigating;
-  set isNavigating(bool v) {
-    if (_currentTarget == null) {
-      return;
-    }
-    _isNavigating = v;
-    notifyListeners();
-  }
-
   void clearPath() {
     _wayPoints.clear();
     notifyListeners();
   }
 
-  void swapPoints(List<int> _i) {
-    if (_i.length == 2) {
-      final temp = _wayPoints[_i[0]];
-      _wayPoints[_i[0]] = _wayPoints[_i[1]];
-      _wayPoints[_i[1]] = temp;
+  void swapPoints() {
+    if (_swap.length == 2) {
+      final temp = _wayPoints[_swap[0]]
+        ..provider.willSwap = false
+        ..provider.hover = true;
+      _wayPoints[_swap[0]] = _wayPoints[_swap[1]]
+        ..provider.willSwap = false
+        ..provider.hover = false;
+      _wayPoints[_swap[1]] = temp;
       notifyListeners();
     }
   }
@@ -90,4 +98,36 @@ class NavigationProvider with ChangeNotifier {
           return NavigationDirection.unkown;
         },
       );
+
+  bool _editablePath = false;
+  bool get editablePath => _editablePath;
+  set editablePath(bool v) {
+    _editablePath = v;
+    notifyListeners();
+  }
+
+  bool _editableWayPointList = false;
+  bool get editableWayPointList => _editableWayPointList;
+  set editableWayPointList(bool v) {
+    _editableWayPointList = v;
+    notifyListeners();
+  }
+
+  final List<int> _swap = [];
+
+  void addToSwapList(int w) {
+    if (_swap.length < 2) {
+      _swap.add(w);
+      if (_swap.length == 2) {
+        swapPoints();
+        clearSwap();
+      }
+    } else {
+      clearSwap();
+    }
+  }
+
+  void clearSwap() {
+    _swap.clear();
+  }
 }

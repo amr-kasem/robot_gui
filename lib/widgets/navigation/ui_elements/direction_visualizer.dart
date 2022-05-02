@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:robot_gui/providers/navigation.dart';
 import 'dart:math' as math;
 
-import '../animations/blinking.dart';
+import '../../animations/blinking.dart';
 
 class DirectionVisualizer extends StatelessWidget {
   const DirectionVisualizer({Key? key}) : super(key: key);

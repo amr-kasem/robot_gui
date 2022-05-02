@@ -3,23 +3,19 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:provider/provider.dart';
 import 'package:latlong2/latlong.dart';
-
 import 'package:flutter/material.dart' as material;
+
 import '../../../models/way_point.dart';
 import '../../../providers/navigation.dart';
-import '../../../widgets/navigation/way_point_widget.dart';
+import '../../../widgets/navigation/waypoints/way_point_widget.dart';
 
 class MapWidget extends StatefulWidget {
   const MapWidget({
     Key? key,
-    required this.newPath,
-    required this.activateNewPath,
   }) : super(key: key);
 
   @override
   State<MapWidget> createState() => _MapWidgetState();
-  final bool newPath;
-  final Function(bool) activateNewPath;
 }
 
 class _MapWidgetState extends State<MapWidget> {
@@ -29,6 +25,7 @@ class _MapWidgetState extends State<MapWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final _navigation = Provider.of<NavigationProvider>(context);
     try {
       if (isTracking) {
         _mapController.move(
@@ -37,12 +34,10 @@ class _MapWidgetState extends State<MapWidget> {
         );
       }
     } catch (e) {}
-    final _navigation = Provider.of<NavigationProvider>(context);
-    final _upcomming = _navigation.upComing;
     return Stack(
       children: [
         MouseRegion(
-          cursor: widget.newPath
+          cursor: _navigation.editablePath
               ? SystemMouseCursors.precise
               : SystemMouseCursors.basic,
           child: FlutterMap(
@@ -61,7 +56,7 @@ class _MapWidgetState extends State<MapWidget> {
                 }
               },
               onTap: (_, _w) {
-                if (widget.newPath) {
+                if (_navigation.editablePath) {
                   _navigation.addWayPoint(
                     WayPoint(
                       latitude: _w.latitude,
@@ -71,7 +66,7 @@ class _MapWidgetState extends State<MapWidget> {
                 }
               },
               onLongPress: (_, _w) {
-                widget.activateNewPath(true);
+                _navigation.editablePath = true;
               },
             ),
             layers: [
@@ -93,7 +88,7 @@ class _MapWidgetState extends State<MapWidget> {
                       ),
                     ),
                   ),
-                  ..._upcomming.asMap().entries.map(
+                  ..._navigation.wayPoints.asMap().entries.map(
                         (e) => Marker(
                           anchorPos: AnchorPos.align(AnchorAlign.top),
                           width: 50.0,
@@ -102,12 +97,11 @@ class _MapWidgetState extends State<MapWidget> {
                             e.value.latitude,
                             e.value.longitude,
                           ),
-                          builder: (ctx) => WayPointWidget(
-                            editable: widget.newPath,
-                            id: e.key,
-                            lat: e.value.latitude,
-                            lng: e.value.longitude,
-                            onDelete: () => _navigation.deleteWayPoint(e.value),
+                          builder: (ctx) => ChangeNotifierProvider.value(
+                            value: e.value.provider,
+                            child: WayPointWidget(
+                              id: e.key,
+                            ),
                           ),
                         ),
                       ),

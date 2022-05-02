@@ -3,9 +3,9 @@ import 'package:robot_gui/screens/home/widgets/direction_widget.dart';
 import 'package:robot_gui/screens/home/widgets/motion_widget.dart';
 import '../../widgets/monitor/camera.dart';
 import '../../widgets/monitor/rviz.dart';
-import '../../widgets/navigation/navigation_joystick.dart';
+import '../../widgets/navigation/ui_elements/navigation_joystick.dart';
+import '../../widgets/navigation/ui_elements/rpm_viewer.dart';
 import '../home/widgets/map.dart';
-import '../../widgets/navigation/rpm_viewer.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);

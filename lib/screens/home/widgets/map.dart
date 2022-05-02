@@ -48,10 +48,10 @@ class _MapViewState extends State<MapView> {
               }
             },
             onLongPress: (_, _w) {
-              _navigation.currentTarget = WayPoint(
-                latitude: _w.latitude,
-                longitude: _w.longitude,
-              );
+              // _navigation.currentTarget = WayPoint(
+              //   latitude: _w.latitude,
+              //   longitude: _w.longitude,
+              // );
               _navigation.isNavigating = true;
             },
           ),
@@ -106,7 +106,7 @@ class _MapViewState extends State<MapView> {
                               ),
                               onPressed: () {
                                 _navigation.isNavigating = false;
-                                _navigation.currentTarget = null;
+                                // _navigation.currentTarget = null;
                               },
                             ),
                           ),
@@ -232,10 +232,10 @@ class _MapViewState extends State<MapView> {
                 );
                 if (_p != null) {
                   _p = _p as Map;
-                  _navigation.currentTarget = WayPoint(
-                    latitude: _p['Latitude'],
-                    longitude: _p['Longitude'],
-                  );
+                  // _navigation.currentTarget = WayPoint(
+                  //   latitude: _p['Latitude'],
+                  //   longitude: _p['Longitude'],
+                  // );
                   _navigation.isNavigating = true;
                 }
               },
