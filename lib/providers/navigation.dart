@@ -45,6 +45,11 @@ class NavigationProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void replaceWayPoint(int oldIndex, int newIndex) {
+    _wayPoints.insert(newIndex, _wayPoints.removeAt(oldIndex));
+    notifyListeners();
+  }
+
   bool get isNavigating => _isNavigating;
   set isNavigating(bool v) {
     if (_currentTarget == null) {
@@ -57,6 +62,23 @@ class NavigationProvider with ChangeNotifier {
   void clearPath() {
     _wayPoints.clear();
     notifyListeners();
+  }
+
+  void swapPoints(List<int> _i) {
+    if (_i.length == 2) {
+      final temp = _wayPoints[_i[0]];
+      _wayPoints[_i[0]] = _wayPoints[_i[1]];
+      _wayPoints[_i[1]] = temp;
+      notifyListeners();
+    }
+  }
+
+  void changeIndex(int i) {
+    if (i < _wayPoints.length) {
+      final temp = _wayPoints[i];
+      _wayPoints.remove(temp);
+      _wayPoints.insert(i, temp);
+    }
   }
 
   Stream<NavigationDirection> get direction => _ros.relativePose.map(

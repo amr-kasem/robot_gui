@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
 import 'package:provider/provider.dart';
+import 'package:robot_gui/providers/map_view.dart';
 import 'package:robot_gui/providers/navigation.dart';
 import 'package:robot_gui/providers/ros_client.dart';
 import 'package:robot_gui/screens/index.dart';
@@ -108,6 +109,7 @@ class MyApp extends StatelessWidget {
           update: (ctx, _ros, _oldProvider) =>
               NavigationProvider.update(_ros, _oldProvider!),
         ),
+        ChangeNotifierProvider(create: (_) => MapViewProvider()),
       ],
       child: FluentApp(
         shortcuts: {

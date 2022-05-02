@@ -13,11 +13,8 @@ class AutonomousScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Flexible(
-          child: ChangeNotifierProvider(
-            create: (_) => MapViewProvider(),
-            child: const MapView(),
-          ),
+        const Flexible(
+          child: MapView(),
           flex: 4,
         ),
         const Divider(direction: Axis.vertical),
