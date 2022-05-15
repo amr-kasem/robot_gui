@@ -6,7 +6,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:flutter/material.dart' as material;
 
 import '../../../models/way_point.dart';
-import '../../../providers/navigation.dart';
+import '../../../providers/navigation.dart' as n;
 import '../../../widgets/navigation/waypoints/way_point_widget.dart';
 
 class MapWidget extends StatefulWidget {
@@ -21,11 +21,11 @@ class MapWidget extends StatefulWidget {
 class _MapWidgetState extends State<MapWidget> {
   bool isTracking = false;
   final _mapController = MapController();
-  var lat = 30.2, long = 31.2, yaw = 0.2;
+  var lat = 30.071836, long = 31.331618, yaw = 0.2;
 
   @override
   Widget build(BuildContext context) {
-    final _navigation = Provider.of<NavigationProvider>(context);
+    final _navigation = Provider.of<n.NavigationProvider>(context);
     try {
       if (isTracking) {
         _mapController.move(
@@ -73,6 +73,50 @@ class _MapWidgetState extends State<MapWidget> {
               TileLayerOptions(
                 urlTemplate: "http://map.localhost/{z}/{x}/{y}.png",
               ),
+              PolylineLayerOptions(
+                polylines: [
+                  Polyline(
+                    points: [
+                      LatLng(lat, long),
+                      ..._navigation.wayPoints
+                          .map((e) => LatLng(e.latitude, e.longitude))
+                          .toList()
+                    ],
+                    color: material.Colors.white,
+                    strokeWidth: 3,
+                  ),
+                  if (_navigation.mode == n.NavigationMode.goReturnRecursive &&
+                      _navigation.wayPoints.isNotEmpty)
+                    Polyline(
+                      points: _navigation.wayPoints
+                          .map(
+                            (e) => LatLng(
+                                e.latitude + 0.00002, e.longitude + 0.00002),
+                          )
+                          .toList(),
+                      color: Colors.orange,
+                      strokeWidth: 3,
+                      isDotted: true,
+                    ),
+                  if (_navigation.mode == n.NavigationMode.goReturnCircular &&
+                      _navigation.wayPoints.isNotEmpty)
+                    Polyline(
+                      points: [
+                        LatLng(
+                          _navigation.wayPoints.first.latitude,
+                          _navigation.wayPoints.first.longitude,
+                        ),
+                        LatLng(
+                          _navigation.wayPoints.last.latitude,
+                          _navigation.wayPoints.last.longitude,
+                        ),
+                      ],
+                      color: Colors.orange,
+                      strokeWidth: 3,
+                      isDotted: true,
+                    ),
+                ],
+              ),
               MarkerLayerOptions(
                 markers: [
                   Marker(
@@ -81,10 +125,31 @@ class _MapWidgetState extends State<MapWidget> {
                     point: LatLng(lat, long),
                     builder: (ctx) => Transform.rotate(
                       angle: yaw,
-                      child: Icon(
-                        material.Icons.navigation,
-                        color: Colors.blue.normal,
-                        size: 40,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Icon(
+                            material.Icons.navigation,
+                            color: Colors.blue.normal,
+                            size: 40,
+                          ),
+                          if (_navigation.editablePath)
+                            MouseRegion(
+                              cursor: SystemMouseCursors.click,
+                              child: IconButton(
+                                icon: const Icon(
+                                  material.Icons.add,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () {
+                                  _navigation.addWayPoint(
+                                    WayPoint(latitude: lat, longitude: long),
+                                    index: 0,
+                                  );
+                                },
+                              ),
+                            )
+                        ],
                       ),
                     ),
                   ),

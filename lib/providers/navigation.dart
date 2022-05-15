@@ -9,10 +9,15 @@ enum NavigationDirection {
   right,
   unkown,
 }
+enum NavigationMode {
+  go,
+  goReturnRecursive,
+  goReturnCircular,
+}
 
 class NavigationProvider with ChangeNotifier {
   late ROSClient _ros;
-
+  NavigationMode _mode = NavigationMode.go;
   NavigationProvider();
   factory NavigationProvider.update(ROSClient ros, NavigationProvider obj) {
     obj._ros = ros;
@@ -27,6 +32,18 @@ class NavigationProvider with ChangeNotifier {
       return;
     }
     _isNavigating = v;
+    notifyListeners();
+  }
+
+  List<bool> get navigationModeMask {
+    final x = [false, false, false];
+    x[_mode.index] = true;
+    return x;
+  }
+
+  NavigationMode get mode => _mode;
+  set mode(NavigationMode v) {
+    _mode = v;
     notifyListeners();
   }
 
@@ -52,8 +69,12 @@ class NavigationProvider with ChangeNotifier {
   }
 
   void addWayPoint(WayPoint p, {int? index}) {
-    if (index == null) {
-      _wayPoints.add(p);
+    if (!_wayPoints.contains(p)) {
+      if (index == null) {
+        _wayPoints.add(p);
+      } else {
+        _wayPoints.insert(index, p);
+      }
     }
     notifyListeners();
   }

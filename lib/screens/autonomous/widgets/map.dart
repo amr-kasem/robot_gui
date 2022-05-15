@@ -3,7 +3,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:provider/provider.dart';
 import 'package:robot_gui/widgets/navigation/waypoints/waypoints_list_view.dart';
-import '/providers/navigation.dart';
+import '/providers/navigation.dart' as n;
 
 import 'map_widget.dart';
 
@@ -12,21 +12,24 @@ class MapView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _navigation = Provider.of<NavigationProvider>(context, listen: false);
+    final _navigation =
+        Provider.of<n.NavigationProvider>(context, listen: false);
     return Stack(
       children: [
         GestureDetector(
           onSecondaryTap: () {
+            _navigation.editablePath = false;
             _navigation.editableWayPointList = false;
           },
           child: const MapWidget(),
         ),
-        Consumer<NavigationProvider>(
+        Consumer<n.NavigationProvider>(
           builder: (context, _p, child) {
             return Align(
               alignment: material.AlignmentDirectional.topEnd,
               child: Row(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (_p.editablePath) ...[
                     Padding(
@@ -39,7 +42,7 @@ class MapView extends StatelessWidget {
                           ),
                           padding: const EdgeInsets.all(5),
                           child: const Icon(
-                            FluentIcons.clear,
+                            material.Icons.block,
                             size: 24,
                             color: Colors.white,
                           ),
@@ -126,20 +129,33 @@ class MapView extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: IconButton(
-                      icon: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: Colors.white.withOpacity(0.4),
+                    padding: const EdgeInsets.all(15),
+                    child: material.Material(
+                      borderRadius: BorderRadius.circular(5),
+                      color: Colors.white.withOpacity(0.5),
+                      child: material.ToggleButtons(
+                        constraints: const BoxConstraints(
+                          minHeight: 36,
+                          minWidth: 36,
+                          maxHeight: 36,
+                          maxWidth: 36,
                         ),
-                        padding: const EdgeInsets.all(5),
-                        child: const Icon(
-                          FluentIcons.settings,
-                          size: 24,
-                        ),
+                        fillColor: Colors.white,
+                        selectedColor: Colors.black,
+                        highlightColor: Colors.black.withOpacity(0.6),
+                        splashColor: Colors.black.withOpacity(0.8),
+                        color: Colors.black,
+                        direction: Axis.vertical,
+                        children: const [
+                          Icon(material.Icons.arrow_right_alt_sharp),
+                          Icon(material.Icons.compare_arrows_sharp),
+                          Icon(material.Icons.mode_of_travel),
+                        ],
+                        isSelected: _navigation.navigationModeMask,
+                        onPressed: (v) {
+                          _navigation.mode = n.NavigationMode.values[v];
+                        },
                       ),
-                      onPressed: () {},
                     ),
                   ),
                   const SizedBox(width: 5)
