@@ -2,6 +2,7 @@
     "Title":"Control Station",
     "Navigation": {
         "Main": "Home",
+        "Navigation": "Self Control",
         "Settings": "Settings",
         "Terminal": "SSH Terminal",
         "Log": "ROS Log"

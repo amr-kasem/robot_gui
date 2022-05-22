@@ -2,6 +2,7 @@
     "Title":"وحدة التحكم",
     "Navigation": {
         "Main": "الرئيسية",
+        "Navigation": "القيادة الذاتية",
         "Settings": "الإعدادات",
         "Terminal": "SSH Terminal",
         "Log": "السجلات (ROS)"

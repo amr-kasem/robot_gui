@@ -80,7 +80,6 @@ class _LogScreenState extends State<LogScreen> {
       backend: SSHTerminalBackend('0.0.0.0', 'auk', ' '),
       maxLines: 10000,
     );
-
     return TerminalView(
       padding: 8,
       terminal: terminal,

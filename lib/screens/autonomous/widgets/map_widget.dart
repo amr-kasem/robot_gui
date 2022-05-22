@@ -4,6 +4,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:provider/provider.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter/material.dart' as material;
+import 'package:robot_gui/screens/autonomous/widgets/actions_widget.dart';
 
 import '../../../models/way_point.dart';
 import '../../../providers/navigation.dart' as n;
@@ -33,7 +34,9 @@ class _MapWidgetState extends State<MapWidget> {
           _mapController.zoom,
         );
       }
-    } catch (e) {}
+    } catch (e) {
+      print(e);
+    }
     return Stack(
       children: [
         MouseRegion(
@@ -179,25 +182,32 @@ class _MapWidgetState extends State<MapWidget> {
           alignment: AlignmentDirectional.bottomEnd,
           child: Padding(
             padding: const EdgeInsets.all(15),
-            child: ToggleButton(
-                checked: isTracking,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(material.Icons.location_searching),
-                    const SizedBox(width: 10),
-                    const Text("Actions.Buttons.track").tr(),
-                  ],
-                ),
-                onChanged: (v) {
-                  setState(() {
-                    _mapController.move(LatLng(lat, long), 18);
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: ToggleButton(
+                  checked: isTracking,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(material.Icons.location_searching),
+                      const SizedBox(width: 10),
+                      const Text("Actions.Buttons.track").tr(),
+                    ],
+                  ),
+                  onChanged: (v) {
+                    setState(() {
+                      _mapController.move(LatLng(lat, long), 18);
 
-                    isTracking = !isTracking;
-                  });
-                }),
+                      isTracking = !isTracking;
+                    });
+                  }),
+            ),
           ),
         ),
+        const Align(
+          alignment: AlignmentDirectional.bottomStart,
+          child: ActionsList(),
+        )
       ],
     );
   }

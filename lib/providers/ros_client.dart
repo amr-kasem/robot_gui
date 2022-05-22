@@ -5,14 +5,16 @@ import 'dart:async';
 
 class ROSClient extends ChangeNotifier {
   late final Ros _ros;
-  double MaxLinearVel = 1.5;
-  double MinLinearVel = -1.5;
-  double MaxAngularVel = 1;
-  double MinAngularVel = -1;
+  double maxLinearVel = 1.5;
+  double minLinearVel = -1.5;
+  double maxAngularVel = 1;
+  double minAngularVel = -1;
 
   bool _emergencyStop = true;
   bool _forceEmergency = false;
-
+  late final Topic _cmdVel;
+  late final Topic _cmdVelFB;
+  late final Timer _cmdPubTimer;
   ROSClient() {
     _ros = Ros();
     _cmdVel = Topic(
@@ -46,9 +48,7 @@ class ROSClient extends ChangeNotifier {
       'z': 0.0,
     },
   };
-  late final _cmdVel;
-  late final _cmdVelFB;
-  late final _cmdPubTimer;
+
   Stream<Status> get status => _ros.statusStream!;
   Stream<dynamic> get cmdVelFB => _cmdVelFB.subscription!;
   Stream<dynamic> get cmdVel =>
@@ -60,9 +60,12 @@ class ROSClient extends ChangeNotifier {
   void connect() async {
     _ros.connect(url: 'ws://0.0.0.0:9090');
     await _cmdVelFB.subscribe();
-    _cmdPubTimer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
-      _cmdVel.publish(cmdVelMsg);
-    });
+    _cmdPubTimer = Timer.periodic(
+      const Duration(milliseconds: 100),
+      (timer) {
+        _cmdVel.publish(cmdVelMsg);
+      },
+    );
   }
 
   double hysteresisCheck(double value, {double width = 0.01}) {
@@ -74,7 +77,7 @@ class ROSClient extends ChangeNotifier {
 
   void linearUp({i = 0.01}) {
     if (_emergencyStop) return;
-    if (cmdVelMsg['linear']!['x']! < MaxLinearVel) {
+    if (cmdVelMsg['linear']!['x']! < maxLinearVel) {
       cmdVelMsg['linear']!['x'] = cmdVelMsg['linear']!['x']! + i;
     }
     cmdVelMsg['linear']!['x'] = hysteresisCheck(cmdVelMsg['linear']!['x']!);
@@ -82,7 +85,7 @@ class ROSClient extends ChangeNotifier {
 
   void linearDown({i = 0.01}) {
     if (_emergencyStop) return;
-    if (cmdVelMsg['linear']!['x']! > MinLinearVel) {
+    if (cmdVelMsg['linear']!['x']! > minLinearVel) {
       cmdVelMsg['linear']!['x'] = cmdVelMsg['linear']!['x']! - i;
     }
     cmdVelMsg['linear']!['x'] = hysteresisCheck(cmdVelMsg['linear']!['x']!);
@@ -90,7 +93,7 @@ class ROSClient extends ChangeNotifier {
 
   void angularUp({i = 0.01}) {
     if (_emergencyStop) return;
-    if (cmdVelMsg['angular']!['z']! < MaxAngularVel) {
+    if (cmdVelMsg['angular']!['z']! < maxAngularVel) {
       cmdVelMsg['angular']!['z'] = cmdVelMsg['angular']!['z']! + i;
     }
     cmdVelMsg['angular']!['z'] = hysteresisCheck(cmdVelMsg['angular']!['z']!);
@@ -98,7 +101,7 @@ class ROSClient extends ChangeNotifier {
 
   void angularDown({i = 0.01}) {
     if (_emergencyStop) return;
-    if (cmdVelMsg['angular']!['z']! > MinAngularVel) {
+    if (cmdVelMsg['angular']!['z']! > minAngularVel) {
       cmdVelMsg['angular']!['z'] = cmdVelMsg['angular']!['z']! - i;
     }
     cmdVelMsg['angular']!['z'] = hysteresisCheck(cmdVelMsg['angular']!['z']!);
@@ -115,8 +118,8 @@ class ROSClient extends ChangeNotifier {
   bool get isEmergency => _emergencyStop;
 
   set isEmergency(bool v) {
-    print(v);
-    print(_forceEmergency);
+    // print(v);
+    // print(_forceEmergency);
     if (!_forceEmergency) {
       _emergencyStop = v;
       zeroAngular();
@@ -125,6 +128,7 @@ class ROSClient extends ChangeNotifier {
     }
   }
 
+  // ignore: unnecessary_getters_setters
   bool get forceEmergency => _forceEmergency;
   set forceEmergency(bool v) {
     _forceEmergency = v;

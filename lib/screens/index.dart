@@ -69,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage> with WindowListener {
             icon: Transform.rotate(
                 angle: math.pi / 4,
                 child: const Icon(material.Icons.navigation_outlined)),
-            title: const Text('Navigation.Main').tr(),
+            title: const Text('Navigation.Navigation').tr(),
           ),
           PaneItem(
             icon: const Icon(FluentIcons.command_prompt),

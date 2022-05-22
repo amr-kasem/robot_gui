@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
 import 'package:provider/provider.dart';
-import 'package:robot_gui/providers/waypoint.dart';
 import 'package:robot_gui/providers/navigation.dart';
 import 'package:robot_gui/providers/ros_client.dart';
 import 'package:robot_gui/screens/index.dart';
