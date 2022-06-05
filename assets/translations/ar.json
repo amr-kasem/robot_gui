@@ -23,7 +23,17 @@
             "yes":"نعم",
             "no":"لا",
             "retry":"أعد المحاولة",
-            "track":"تتبع المركبة"
+            "track":"تتبع المركبة",
+            "startMission":"بدء المهمة",
+            "cancelMission":"إلغاء المهمة"
+        }
+    },
+    "Alerts":{
+        "Titles":{
+            "caution":"تحذير"
+        },
+        "Messages":{
+            "makesure":"هل أنت متأكد؟"
         }
     }
 }

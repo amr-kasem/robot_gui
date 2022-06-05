@@ -15,6 +15,8 @@ class ROSClient extends ChangeNotifier {
   late final Topic _cmdVel;
   late final Topic _cmdVelFB;
   late final Timer _cmdPubTimer;
+  late final ActionClient _moveBaseAction;
+
   ROSClient() {
     _ros = Ros();
     _cmdVel = Topic(
@@ -34,6 +36,12 @@ class ROSClient extends ChangeNotifier {
       queueSize: 10,
     );
     connect();
+    _moveBaseAction = ActionClient(
+      ros: _ros,
+      serverName: 'fibonacci',
+      actionName: 'FibonacciAction',
+      packageName: 'actionlib_tutorials',
+    );
   }
 
   final cmdVelMsg = {
@@ -118,8 +126,6 @@ class ROSClient extends ChangeNotifier {
   bool get isEmergency => _emergencyStop;
 
   set isEmergency(bool v) {
-    // print(v);
-    // print(_forceEmergency);
     if (!_forceEmergency) {
       _emergencyStop = v;
       zeroAngular();

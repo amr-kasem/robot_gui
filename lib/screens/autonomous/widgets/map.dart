@@ -51,8 +51,9 @@ class MapView extends StatelessWidget {
                           await showDialog(
                             context: context,
                             builder: (context) => ContentDialog(
-                              content: Text('are you sure?'),
-                              title: Text('Caution!'),
+                              content:
+                                  const Text('Alerts.Messages.makesure').tr(),
+                              title: const Text('Alerts.Titles.caution').tr(),
                               actions: [
                                 Button(
                                   child: const Text('Actions.Buttons.yes').tr(),

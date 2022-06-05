@@ -23,7 +23,17 @@
             "yes":"Yes",
             "no":"No",
             "retry":"Tap to reload",
-            "track":"Track"
+            "track":"Track",
+            "startMission":"Start Mission",
+            "cancelMission":"Cancel Mission"
+        }
+    },
+    "Alerts":{
+        "Titles":{
+            "caution":"Caution!"
+        },
+        "Messages":{
+            "makesure":"Are you sure?"
         }
     }
 }
