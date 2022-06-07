@@ -19,13 +19,12 @@ class _CameraViewerState extends State<CameraViewer> {
       child: Mjpeg(
         width: double.infinity,
         key: UniqueKey(),
-        // stream: 'http://0.0.0.0:8080/stream?topic=/stream1/image',
-        stream:
-            'http://84.191.40.192/cgi-bin/faststream.jpg?stream=half&fps=15&rand=COUNTER',
+        stream: 'http://root:drrobot@192.168.0.65/mjpg/video.mjpg',
         fit: BoxFit.contain,
         loading: (ctx) => const Center(
           child: ProgressRing(),
         ),
+        headers: {},
         isLive: true,
         timeout: const Duration(seconds: 2),
         error: (ctx, e, v) {

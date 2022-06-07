@@ -66,7 +66,7 @@ class ROSClient extends ChangeNotifier {
       Stream.periodic(const Duration(milliseconds: 100), (_) => {'yaw': 0.0});
 
   void connect() async {
-    _ros.connect(url: 'ws://0.0.0.0:9090');
+    _ros.connect(url: 'ws://192.168.0.104:9090');
     await _cmdVelFB.subscribe();
     _cmdPubTimer = Timer.periodic(
       const Duration(milliseconds: 100),
