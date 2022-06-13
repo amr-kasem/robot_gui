@@ -4,9 +4,11 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:provider/provider.dart';
-import 'package:robot_gui/providers/navigation.dart';
-
-import '../../../models/way_point.dart';
+import 'package:robot_gui/models/geopoint.dart';
+import 'package:robot_gui/providers/geo_navigation.dart';
+import 'package:robot_gui/providers/ros_client.dart';
+import 'package:vector_math/vector_math.dart' as vector;
+import 'dart:math';
 
 class MapView extends StatefulWidget {
   const MapView({Key? key}) : super(key: key);
@@ -24,7 +26,8 @@ class _MapViewState extends State<MapView> {
 
   @override
   Widget build(BuildContext context) {
-    final _navigation = Provider.of<NavigationProvider>(context);
+    final _navigation = Provider.of<GeoNavigationProvider>(context);
+    final _ros = Provider.of<ROSClient>(context, listen: false);
     try {
       if (isTracking) {
         _mapController.move(LatLng(lat, long), _mapController.zoom);
@@ -32,94 +35,134 @@ class _MapViewState extends State<MapView> {
     } catch (e) {}
     return Stack(
       children: [
-        FlutterMap(
-          mapController: _mapController,
-          options: MapOptions(
-            center: LatLng(lat, long),
-            zoom: 18,
-            minZoom: 9,
-            maxZoom: 18,
-            allowPanning: true,
-            onPositionChanged: (_, _self) {
-              if (_self) {
-                setState(() {
-                  isTracking = false;
-                });
-              }
-            },
-            onLongPress: (_, _w) {
-              _navigation.addWayPoint(WayPoint(
-                latitude: _w.latitude,
-                longitude: _w.longitude,
-              ));
-              _navigation.setCurrentTarget(0);
-              _navigation.isNavigating = true;
-            },
-          ),
-          layers: [
-            TileLayerOptions(
-              urlTemplate: "http://map.localhost/{z}/{x}/{y}.png",
-            ),
-            MarkerLayerOptions(
-              markers: [
-                Marker(
-                  width: 40.0,
-                  height: 40.0,
-                  point: LatLng(lat, long),
-                  builder: (ctx) => Transform.rotate(
-                    angle: yaw,
-                    child: Icon(
-                      material.Icons.navigation,
-                      color: Colors.blue.normal,
-                      size: 40,
-                    ),
-                  ),
+        StreamBuilder(
+            stream: _ros.gps,
+            builder: (context, snapshot) {
+              lat = (snapshot.data as Map?)?['msg']?['latitude'] ?? lat;
+              long = (snapshot.data as Map?)?['msg']?['longitude'] ?? long;
+              print('gps $lat,$long');
+              return FlutterMap(
+                mapController: _mapController,
+                options: MapOptions(
+                  center: LatLng(lat, long),
+                  zoom: 15,
+                  minZoom: 9,
+                  maxZoom: 18,
+                  allowPanning: true,
+                  onPositionChanged: (_, _self) {
+                    if (_self) {
+                      setState(() {
+                        isTracking = false;
+                      });
+                    }
+                  },
+                  onLongPress: (_, _w) {
+                    _navigation.addWayPoint(GeoPoint(
+                      latitude: _w.latitude,
+                      longitude: _w.longitude,
+                    ));
+                    _navigation.setCurrentTarget(0);
+                    _navigation.isNavigating = true;
+                  },
                 ),
-                if (_navigation.currentTarget != null)
-                  Marker(
-                    anchorPos: AnchorPos.align(AnchorAlign.top),
-                    width: 50.0,
-                    height: 50.0,
-                    point: LatLng(
-                      _navigation.currentTarget!.latitude,
-                      _navigation.currentTarget!.longitude,
-                    ),
-                    builder: (ctx) => Stack(
-                      alignment: Alignment.bottomCenter,
-                      children: [
-                        Icon(
-                          material.Icons.location_on,
-                          color: Colors.blue.normal,
-                          size: 40,
-                        ),
-                        Align(
-                          alignment: Alignment.topRight,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.red.withOpacity(0.5),
-                              shape: BoxShape.circle,
-                            ),
-                            child: IconButton(
-                              icon: const Icon(
-                                FluentIcons.remove,
-                                size: 10,
-                                color: Colors.white,
+                layers: [
+                  TileLayerOptions(
+                    urlTemplate:
+                        "http://192.168.0.104/OSM_sat_tiles/{z}/{x}/{y}.png",
+                    // urlTemplate:
+                    //     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+                    // subdomains: ['a', 'b', 'c'],
+                    attributionBuilder: (_) {
+                      return const Text("JAGUAR Local Map");
+                    },
+                  ),
+                  MarkerLayerOptions(
+                    markers: [
+                      Marker(
+                        width: 40.0,
+                        height: 40.0,
+                        point: LatLng(lat, long),
+                        builder: (ctx) => StreamBuilder(
+                          stream: _ros.odom,
+                          builder: (context, dataSnapshot) {
+                            final q = vector.Quaternion(
+                              (dataSnapshot.data as Map?)?['msg']
+                                      ?['orientation']?['x'] ??
+                                  0,
+                              (dataSnapshot.data as Map?)?['msg']
+                                      ?['orientation']?['y'] ??
+                                  0,
+                              (dataSnapshot.data as Map?)?['msg']
+                                      ?['orientation']?['z'] ??
+                                  0,
+                              (dataSnapshot.data as Map?)?['msg']
+                                      ?['orientation']?['w'] ??
+                                  1,
+                            );
+                            var roll = atan2(2.0 * (q.y * q.z + q.w * q.x),
+                                q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z);
+                            // var pitch = -asin(-2.0 * (q.x * q.z - q.w * q.y));
+                            // var yaw = -atan2(2.0 * (q.x * q.y + q.w * q.z),
+                            //     q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z);
+
+                            return Transform.rotate(
+                              angle: roll,
+                              child: Icon(
+                                // material.Icons.navigation,
+                                material.Icons.location_on,
+                                color: Colors.teal,
+                                size: 40,
                               ),
-                              onPressed: () {
-                                _navigation.isNavigating = false;
-                                _navigation.clearPath();
-                                _navigation.setCurrentTarget(null);
-                              },
-                            ),
+                            );
+                          },
+                        ),
+                      ),
+                      if (_navigation.currentTarget != null)
+                        Marker(
+                          anchorPos: AnchorPos.align(AnchorAlign.top),
+                          width: 50.0,
+                          height: 50.0,
+                          point: LatLng(
+                            (_navigation.currentTarget as GeoPoint).latitude,
+                            (_navigation.currentTarget as GeoPoint).longitude,
+                          ),
+                          builder: (ctx) => Stack(
+                            alignment: Alignment.bottomCenter,
+                            children: [
+                              Icon(
+                                material.Icons.location_on,
+                                color: Colors.blue.normal,
+                                size: 40,
+                              ),
+                              Align(
+                                alignment: Alignment.topRight,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.red.withOpacity(0.5),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      FluentIcons.remove,
+                                      size: 10,
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      _navigation.isNavigating = false;
+                                      _navigation.clearPath();
+                                      _navigation.setCurrentTarget(null);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
+                    ],
                   ),
-              ],
-            ),
-          ],
-        ),
+                ],
+              );
+            }),
         Align(
           alignment: AlignmentDirectional.bottomEnd,
           child: Padding(
@@ -218,7 +261,7 @@ class _MapViewState extends State<MapView> {
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
+                            children: const [
                               // Icon(FluentIcons.add),
                               Text('إلغاء'),
                             ],
@@ -238,7 +281,7 @@ class _MapViewState extends State<MapView> {
 
                   // );
                   _navigation.clearPath();
-                  _navigation.addWayPoint(WayPoint(
+                  _navigation.addWayPoint(GeoPoint(
                     latitude: _p['Latitude'],
                     longitude: _p['Longitude'],
                   ));

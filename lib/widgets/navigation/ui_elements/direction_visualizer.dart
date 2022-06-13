@@ -1,7 +1,8 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:provider/provider.dart';
-import 'package:robot_gui/providers/navigation.dart';
+import 'package:robot_gui/providers/geo_navigation.dart';
+import 'package:robot_gui/providers/geo_navigation.dart';
 import 'dart:math' as math;
 
 import '../../animations/blinking.dart';
@@ -46,14 +47,15 @@ class DirectionVisualizer extends StatelessWidget {
         ),
       ),
     ];
-    return Consumer<NavigationProvider>(
+    return Consumer<GeoNavigationProvider>(
       builder: (ctx, _navigation, _) => _navigation.isNavigating
           ? navigationIcon(_navigation, widgets)
           : const SizedBox.shrink(),
     );
   }
 
-  Widget navigationIcon(NavigationProvider _navigation, List<Widget> _widgets) {
+  Widget navigationIcon(
+      GeoNavigationProvider _navigation, List<Widget> _widgets) {
     return StreamBuilder(
       stream: _navigation.direction,
       builder: ((context, snapshot) {

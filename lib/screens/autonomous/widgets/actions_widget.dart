@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 
-import '../../../providers/navigation.dart';
+import '../../../providers/geo_navigation.dart';
 
 class ActionsList extends StatefulWidget {
   const ActionsList({Key? key}) : super(key: key);
@@ -16,7 +16,7 @@ class _ActionsListState extends State<ActionsList> {
   bool _hover = false;
   @override
   Widget build(BuildContext context) {
-    final _navigation = Provider.of<NavigationProvider>(context);
+    final _navigation = Provider.of<GeoNavigationProvider>(context);
     return Padding(
       padding: const EdgeInsets.all(15),
       child: Row(

@@ -1,6 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
-import '../../../providers/navigation.dart';
+import 'package:robot_gui/providers/geo_navigation.dart';
 import 'waypoint_tile.dart';
 
 class WayPointsListView extends StatelessWidget {
@@ -10,7 +10,7 @@ class WayPointsListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _navigation = Provider.of<NavigationProvider>(context);
+    final _navigation = Provider.of<GeoNavigationProvider>(context);
 
     return AnimatedSize(
       duration: const Duration(milliseconds: 200),

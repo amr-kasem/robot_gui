@@ -3,9 +3,9 @@ import 'package:flutter/material.dart' as material;
 import 'package:contextmenu/contextmenu.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:robot_gui/models/geopoint.dart';
+import 'package:robot_gui/providers/geo_navigation.dart';
 import 'package:robot_gui/providers/waypoint.dart';
-
-import '../../../providers/navigation.dart';
 
 class HideMenuIntent extends Intent {
   const HideMenuIntent();
@@ -42,7 +42,9 @@ class WayPointWidget extends StatelessWidget {
                             width: 80,
                             child: Text('خط طول :'),
                           ),
-                          Text(_p.data.longitude.toStringAsFixed(7)),
+                          Text((_p.data as GeoPoint)
+                              .longitude
+                              .toStringAsFixed(7)),
                         ],
                       ),
                       Row(
@@ -52,7 +54,9 @@ class WayPointWidget extends StatelessWidget {
                             width: 80,
                             child: Text('دائرة عرض :'),
                           ),
-                          Text(_p.data.latitude.toStringAsFixed(7)),
+                          Text((_p.data as GeoPoint)
+                              .latitude
+                              .toStringAsFixed(7)),
                         ],
                       ),
                     ],
@@ -69,7 +73,7 @@ class WayPointWidget extends StatelessWidget {
                 size: 40,
               ),
             ),
-            Consumer<NavigationProvider>(builder: (context, _n, _) {
+            Consumer<GeoNavigationProvider>(builder: (context, _n, _) {
               return _n.editablePath
                   ? Align(
                       alignment: Alignment.topRight,
@@ -85,7 +89,7 @@ class WayPointWidget extends StatelessWidget {
                             color: Colors.white,
                           ),
                           onPressed: () {
-                            _n.deleteWayPoint(_p.data);
+                            _n.deleteWayPoint(_p.data as GeoPoint);
                           },
                         ),
                       ),
@@ -118,7 +122,7 @@ class WayPointWidget extends StatelessWidget {
         _provider.hover = false;
       },
       cursor: SystemMouseCursors.basic,
-      child: Consumer<NavigationProvider>(
+      child: Consumer<GeoNavigationProvider>(
         builder: (context, _p, c) {
           return _p.editablePath
               ? ContextMenuArea(

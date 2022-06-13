@@ -17,6 +17,10 @@ class ROSClient extends ChangeNotifier {
   late final Timer _cmdPubTimer;
   late final ActionClient _moveBaseAction;
 
+  late final Topic _gps;
+
+  late final Topic _odom;
+
   ROSClient() {
     _ros = Ros();
     _cmdVel = Topic(
@@ -35,6 +39,24 @@ class ROSClient extends ChangeNotifier {
       queueLength: 10,
       queueSize: 10,
     );
+
+    _gps = Topic(
+      ros: _ros,
+      name: '/gps/filtered',
+      type: "sensor_msgs/NavSatFix",
+      reconnectOnClose: true,
+      queueLength: 10,
+      queueSize: 10,
+    );
+    _odom = Topic(
+      ros: _ros,
+      name: '/imu/data',
+      type: "sensor_msgs/Imu",
+      reconnectOnClose: true,
+      queueLength: 10,
+      queueSize: 10,
+    );
+
     connect();
     _moveBaseAction = ActionClient(
       ros: _ros,
@@ -59,8 +81,10 @@ class ROSClient extends ChangeNotifier {
 
   Stream<Status> get status => _ros.statusStream!;
   Stream<dynamic> get cmdVelFB => _cmdVelFB.subscription!;
+  Stream<dynamic> get gps => _gps.subscription!;
   Stream<dynamic> get cmdVel =>
       Stream.periodic(const Duration(milliseconds: 100), (_) => cmdVelMsg);
+  Stream<dynamic> get odom => _odom.subscription!;
 
   Stream<dynamic> get relativePose =>
       Stream.periodic(const Duration(milliseconds: 100), (_) => {'yaw': 0.0});
@@ -68,6 +92,8 @@ class ROSClient extends ChangeNotifier {
   void connect() async {
     _ros.connect(url: 'ws://192.168.0.104:9090');
     await _cmdVelFB.subscribe();
+    await _gps.subscribe();
+    await _odom.subscribe();
     _cmdPubTimer = Timer.periodic(
       const Duration(milliseconds: 100),
       (timer) {

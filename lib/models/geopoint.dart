@@ -1,17 +1,21 @@
 import 'dart:convert' as json;
+import 'package:robot_gui/models/waypoint.dart';
 import 'package:robot_gui/providers/waypoint.dart';
 
-class WayPoint {
+class GeoPoint extends WayPoint {
   late double latitude;
   late double longitude;
+  @override
   bool reached = false;
   double? yaw;
+  @override
   late WayPointProvider provider;
 
-  WayPoint({required this.latitude, required this.longitude}) {
+  GeoPoint({required this.latitude, required this.longitude}) {
     provider = WayPointProvider(this);
   }
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'latitude': latitude,
@@ -30,8 +34,7 @@ class WayPoint {
   int get hashCode => latitude.hashCode + longitude.hashCode;
   @override
   bool operator ==(Object other) {
-    if (other is WayPoint) print((other.latitude - latitude).abs());
-    return other is WayPoint &&
+    return other is GeoPoint &&
         (other.latitude - latitude).abs() < 0.00003 &&
         (other.longitude - longitude).abs() < 0.00003;
   }

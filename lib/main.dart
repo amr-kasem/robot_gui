@@ -3,7 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
 import 'package:provider/provider.dart';
-import 'package:robot_gui/providers/navigation.dart';
+import 'package:robot_gui/providers/geo_navigation.dart';
+import 'package:robot_gui/providers/odom_navigation.dart';
 import 'package:robot_gui/providers/ros_client.dart';
 import 'package:robot_gui/screens/index.dart';
 import 'package:system_theme/system_theme.dart';
@@ -103,10 +104,15 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ROSClient()),
-        ChangeNotifierProxyProvider<ROSClient, NavigationProvider>(
-          create: (ctx) => NavigationProvider(),
+        ChangeNotifierProxyProvider<ROSClient, GeoNavigationProvider>(
+          create: (ctx) => GeoNavigationProvider(),
           update: (ctx, _ros, _oldProvider) =>
-              NavigationProvider.update(_ros, _oldProvider!),
+              GeoNavigationProvider.update(_ros, _oldProvider!),
+        ),
+        ChangeNotifierProxyProvider<ROSClient, OdomNavigationProvider>(
+          create: (ctx) => OdomNavigationProvider(),
+          update: (ctx, _ros, _oldProvider) =>
+              OdomNavigationProvider.update(_ros, _oldProvider!),
         ),
       ],
       child: FluentApp(

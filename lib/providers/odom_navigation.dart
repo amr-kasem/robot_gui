@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
-import 'package:robot_gui/models/way_point.dart';
+import 'package:robot_gui/models/waypoint.dart';
 import 'package:robot_gui/providers/ros_client.dart';
+
+import '../models/odompoint.dart';
 
 enum NavigationDirection {
   ahead,
@@ -9,17 +11,19 @@ enum NavigationDirection {
   right,
   unkown,
 }
+
 enum NavigationMode {
   go,
   goReturnRecursive,
   goReturnCircular,
 }
 
-class NavigationProvider with ChangeNotifier {
+class OdomNavigationProvider with ChangeNotifier {
   late ROSClient _ros;
   NavigationMode _mode = NavigationMode.go;
-  NavigationProvider();
-  factory NavigationProvider.update(ROSClient ros, NavigationProvider obj) {
+  OdomNavigationProvider();
+  factory OdomNavigationProvider.update(
+      ROSClient ros, OdomNavigationProvider obj) {
     obj._ros = ros;
     return obj;
   }
@@ -49,7 +53,7 @@ class NavigationProvider with ChangeNotifier {
 
   int? _currentTarget;
 
-  WayPoint? get currentTarget {
+  OdomPoint? get currentTarget {
     if (_currentTarget != null) return _wayPoints[_currentTarget!];
     return null;
   }
@@ -59,16 +63,16 @@ class NavigationProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  final List<WayPoint> _wayPoints = [];
+  final List<OdomPoint> _wayPoints = [];
 
-  List<WayPoint> get wayPoints => _wayPoints;
+  List<OdomPoint> get wayPoints => _wayPoints;
 
-  void deleteWayPoint(WayPoint p) {
+  void deleteWayPoint(OdomPoint p) {
     _wayPoints.remove(p);
     notifyListeners();
   }
 
-  void addWayPoint(WayPoint p, {int? index}) {
+  void addWayPoint(OdomPoint p, {int? index}) {
     if (!_wayPoints.contains(p)) {
       if (index == null) {
         _wayPoints.add(p);

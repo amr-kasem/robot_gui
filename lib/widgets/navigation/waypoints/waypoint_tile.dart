@@ -1,9 +1,11 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:provider/provider.dart';
+import 'package:robot_gui/providers/geo_navigation.dart';
 import 'package:robot_gui/providers/waypoint.dart';
 
-import '../../../providers/navigation.dart';
+import '../../../models/geopoint.dart';
+import '../../../providers/geo_navigation.dart';
 
 class WayPointListTile extends StatelessWidget {
   const WayPointListTile({
@@ -13,7 +15,7 @@ class WayPointListTile extends StatelessWidget {
   final int index;
   @override
   Widget build(BuildContext context) {
-    final _navigation = Provider.of<NavigationProvider>(context);
+    final _navigation = Provider.of<GeoNavigationProvider>(context);
     final _w = Provider.of<WayPointProvider>(context);
 
     return MouseRegion(
@@ -45,7 +47,7 @@ class WayPointListTile extends StatelessWidget {
         ),
         title: Text('${index + 1}'),
         subtitle: Text(
-            '${_w.data.latitude.toStringAsFixed(7)},${_w.data.longitude.toStringAsFixed(7)}'),
+            '${(_w.data as GeoPoint).latitude.toStringAsFixed(7)},${(_w.data as GeoPoint).longitude.toStringAsFixed(7)}'),
         trailing: IconButton(
           icon: const Icon(FluentIcons.edit),
           onPressed: () {},

@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:robot_gui/models/way_point.dart';
+import 'package:robot_gui/models/waypoint.dart';
 
 class WayPointProvider with ChangeNotifier {
   WayPoint data;

@@ -1,8 +1,8 @@
-import 'dart:ui';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_mjpeg/flutter_mjpeg.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:http_auth/http_auth.dart' as http_auth;
+import 'package:http/http.dart' as http;
 
 class CameraViewer extends StatefulWidget {
   const CameraViewer({Key? key}) : super(key: key);
@@ -19,14 +19,15 @@ class _CameraViewerState extends State<CameraViewer> {
       child: Mjpeg(
         width: double.infinity,
         key: UniqueKey(),
-        stream: 'http://root:drrobot@192.168.0.65/mjpg/video.mjpg',
+        stream: 'http://192.168.0.65/mjpg/video.mjpg',
         fit: BoxFit.contain,
         loading: (ctx) => const Center(
           child: ProgressRing(),
         ),
-        headers: {},
+        username: 'root',
+        password: 'drrobot',
         isLive: true,
-        timeout: const Duration(seconds: 2),
+        // timeout: const Duration(seconds: 2),
         error: (ctx, e, v) {
           return TextButton(
             onPressed: () => setState(() {}),

@@ -4,10 +4,11 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:provider/provider.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:flutter/material.dart' as material;
+import 'package:robot_gui/models/geopoint.dart';
 import 'package:robot_gui/screens/autonomous/widgets/actions_widget.dart';
 
-import '../../../models/way_point.dart';
-import '../../../providers/navigation.dart' as n;
+import '../../../providers/geo_navigation.dart';
+import '../../../providers/geo_navigation.dart' as n;
 import '../../../widgets/navigation/waypoints/way_point_widget.dart';
 
 class MapWidget extends StatefulWidget {
@@ -26,7 +27,7 @@ class _MapWidgetState extends State<MapWidget> {
 
   @override
   Widget build(BuildContext context) {
-    final _navigation = Provider.of<n.NavigationProvider>(context);
+    final _navigation = Provider.of<GeoNavigationProvider>(context);
     try {
       if (isTracking) {
         _mapController.move(
@@ -61,7 +62,7 @@ class _MapWidgetState extends State<MapWidget> {
               onTap: (_, _w) {
                 if (_navigation.editablePath) {
                   _navigation.addWayPoint(
-                    WayPoint(
+                    GeoPoint(
                       latitude: _w.latitude,
                       longitude: _w.longitude,
                     ),
@@ -74,7 +75,8 @@ class _MapWidgetState extends State<MapWidget> {
             ),
             layers: [
               TileLayerOptions(
-                urlTemplate: "http://map.localhost/{z}/{x}/{y}.png",
+                urlTemplate:
+                    "http://192.168.0.104/OSM_sat_tiles/{z}/{x}/{y}.png",
               ),
               PolylineLayerOptions(
                 polylines: [
@@ -82,7 +84,7 @@ class _MapWidgetState extends State<MapWidget> {
                     points: [
                       LatLng(lat, long),
                       ..._navigation.wayPoints
-                          .map((e) => LatLng(e.latitude, e.longitude))
+                          .map((e) => LatLng((e).latitude, e.longitude))
                           .toList()
                     ],
                     color: material.Colors.white,
@@ -94,7 +96,7 @@ class _MapWidgetState extends State<MapWidget> {
                       points: _navigation.wayPoints
                           .map(
                             (e) => LatLng(
-                                e.latitude + 0.00002, e.longitude + 0.00002),
+                                (e).latitude + 0.00002, e.longitude + 0.00002),
                           )
                           .toList(),
                       color: Colors.orange,
@@ -106,12 +108,12 @@ class _MapWidgetState extends State<MapWidget> {
                     Polyline(
                       points: [
                         LatLng(
-                          _navigation.wayPoints.first.latitude,
-                          _navigation.wayPoints.first.longitude,
+                          (_navigation.wayPoints.first).latitude,
+                          (_navigation.wayPoints.first).longitude,
                         ),
                         LatLng(
-                          _navigation.wayPoints.last.latitude,
-                          _navigation.wayPoints.last.longitude,
+                          (_navigation.wayPoints.last).latitude,
+                          (_navigation.wayPoints.last).longitude,
                         ),
                       ],
                       color: Colors.orange,
@@ -146,7 +148,7 @@ class _MapWidgetState extends State<MapWidget> {
                                 ),
                                 onPressed: () {
                                   _navigation.addWayPoint(
-                                    WayPoint(latitude: lat, longitude: long),
+                                    GeoPoint(latitude: lat, longitude: long),
                                     index: 0,
                                   );
                                 },
@@ -162,8 +164,8 @@ class _MapWidgetState extends State<MapWidget> {
                           width: 50.0,
                           height: 50.0,
                           point: LatLng(
-                            e.value.latitude,
-                            e.value.longitude,
+                            (e.value).latitude,
+                            (e.value).longitude,
                           ),
                           builder: (ctx) => ChangeNotifierProvider.value(
                             value: e.value.provider,

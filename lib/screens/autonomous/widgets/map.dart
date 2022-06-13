@@ -3,7 +3,8 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:provider/provider.dart';
 import 'package:robot_gui/widgets/navigation/waypoints/waypoints_list_view.dart';
-import '/providers/navigation.dart' as n;
+import '../../../providers/geo_navigation.dart';
+import '../../../providers/geo_navigation.dart' as n;
 
 import 'map_widget.dart';
 
@@ -13,7 +14,7 @@ class MapView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final _navigation =
-        Provider.of<n.NavigationProvider>(context, listen: false);
+        Provider.of<GeoNavigationProvider>(context, listen: false);
     return Stack(
       children: [
         GestureDetector(
@@ -23,7 +24,7 @@ class MapView extends StatelessWidget {
           },
           child: const MapWidget(),
         ),
-        Consumer<n.NavigationProvider>(
+        Consumer<GeoNavigationProvider>(
           builder: (context, _p, child) {
             return Align(
               alignment: material.AlignmentDirectional.topEnd,
