@@ -6,6 +6,9 @@ abstract class WayPoint {
 
   Map<String, dynamic> toJson();
 
+  double get latitude;
+  double get longitude;
+
   @override
   String toString();
 

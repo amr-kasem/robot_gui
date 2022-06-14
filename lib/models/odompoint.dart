@@ -6,13 +6,20 @@ import 'package:robot_gui/providers/waypoint.dart';
 class OdomPoint extends WayPoint {
   late double x;
   late double y;
+  late double lat;
+  late double long;
   @override
   bool reached = false;
   double? yaw;
   @override
   late WayPointProvider provider;
 
-  OdomPoint({required this.x, required this.y}) {
+  OdomPoint({
+    required this.x,
+    required this.y,
+    required this.lat,
+    required this.long,
+  }) {
     provider = WayPointProvider(this);
   }
 
@@ -21,6 +28,8 @@ class OdomPoint extends WayPoint {
     return {
       'x': x,
       'y': y,
+      'lat': lat,
+      'long': long,
       'reached': reached,
       'yaw': yaw ?? 0,
     };
@@ -39,4 +48,10 @@ class OdomPoint extends WayPoint {
         (other.x - x).abs() < 0.00003 &&
         (other.y - y).abs() < 0.00003;
   }
+
+  @override
+  double get latitude => lat;
+
+  @override
+  double get longitude => long;
 }

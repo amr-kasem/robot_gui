@@ -50,8 +50,8 @@ class ROSClient extends ChangeNotifier {
     );
     _odom = Topic(
       ros: _ros,
-      name: '/imu/data',
-      type: "sensor_msgs/Imu",
+      name: '/odometry/filtered/global',
+      type: "nav_msgs/Odometry",
       reconnectOnClose: true,
       queueLength: 10,
       queueSize: 10,

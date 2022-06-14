@@ -14,10 +14,13 @@ class HideMenuIntent extends Intent {
 class WayPointWidget extends StatelessWidget {
   const WayPointWidget({
     Key? key,
+    required this.deleteButton,
     required this.id,
+    required this.builder,
   }) : super(key: key);
   final int id;
-
+  final Widget deleteButton;
+  final Function(Widget child) builder;
   @override
   Widget build(BuildContext context) {
     final _provider = Provider.of<WayPointProvider>(context, listen: false);
@@ -42,9 +45,7 @@ class WayPointWidget extends StatelessWidget {
                             width: 80,
                             child: Text('خط طول :'),
                           ),
-                          Text((_p.data as GeoPoint)
-                              .longitude
-                              .toStringAsFixed(7)),
+                          Text(_p.data.longitude.toStringAsFixed(7)),
                         ],
                       ),
                       Row(
@@ -54,9 +55,7 @@ class WayPointWidget extends StatelessWidget {
                             width: 80,
                             child: Text('دائرة عرض :'),
                           ),
-                          Text((_p.data as GeoPoint)
-                              .latitude
-                              .toStringAsFixed(7)),
+                          Text(_p.data.latitude.toStringAsFixed(7)),
                         ],
                       ),
                     ],
@@ -73,29 +72,7 @@ class WayPointWidget extends StatelessWidget {
                 size: 40,
               ),
             ),
-            Consumer<GeoNavigationProvider>(builder: (context, _n, _) {
-              return _n.editablePath
-                  ? Align(
-                      alignment: Alignment.topRight,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.red.withOpacity(0.5),
-                          shape: BoxShape.circle,
-                        ),
-                        child: IconButton(
-                          icon: const Icon(
-                            FluentIcons.remove,
-                            size: 10,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
-                            _n.deleteWayPoint(_p.data as GeoPoint);
-                          },
-                        ),
-                      ),
-                    )
-                  : const SizedBox.shrink();
-            }),
+            deleteButton,
             Align(
               alignment: Alignment.topLeft,
               child: Padding(
@@ -122,56 +99,7 @@ class WayPointWidget extends StatelessWidget {
         _provider.hover = false;
       },
       cursor: SystemMouseCursors.basic,
-      child: Consumer<GeoNavigationProvider>(
-        builder: (context, _p, c) {
-          return _p.editablePath
-              ? ContextMenuArea(
-                  width: 180,
-                  verticalPadding: 20,
-                  builder: (BuildContext context) => [
-                    Shortcuts(
-                      shortcuts: {
-                        LogicalKeySet(LogicalKeyboardKey.escape):
-                            const HideMenuIntent(),
-                      },
-                      child: Actions(
-                        actions: {
-                          HideMenuIntent: CallbackAction<HideMenuIntent>(
-                            onInvoke: (HideMenuIntent intent) =>
-                                Navigator.of(context).pop(),
-                          ),
-                        },
-                        child: Focus(
-                          autofocus: true,
-                          child: Column(
-                            children: [
-                              TappableListTile(
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                },
-                                leading: const Icon(FluentIcons.move),
-                                title: const Text('Modify'),
-                              ),
-                              TappableListTile(
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                },
-                                leading: const Icon(
-                                    material.Icons.move_down_rounded),
-                                title: const Text('Change index'),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                  child: c!,
-                )
-              : c!;
-        },
-        child: _marker,
-      ),
+      child: builder(_marker),
     );
   }
 }

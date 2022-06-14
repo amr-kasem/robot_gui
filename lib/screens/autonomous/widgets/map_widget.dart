@@ -1,5 +1,7 @@
+import 'package:contextmenu/contextmenu.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:provider/provider.dart';
 import 'package:latlong2/latlong.dart';
@@ -171,6 +173,89 @@ class _MapWidgetState extends State<MapWidget> {
                             value: e.value.provider,
                             child: WayPointWidget(
                               id: e.key,
+                              deleteButton: _navigation.editablePath
+                                  ? Align(
+                                      alignment: Alignment.topRight,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.red.withOpacity(0.5),
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: IconButton(
+                                          icon: const Icon(
+                                            FluentIcons.remove,
+                                            size: 10,
+                                            color: Colors.white,
+                                          ),
+                                          onPressed: () {
+                                            _navigation.deleteWayPoint(e.value);
+                                          },
+                                        ),
+                                      ),
+                                    )
+                                  : const SizedBox.shrink(),
+                              builder: (_marker) =>
+                                  Consumer<GeoNavigationProvider>(
+                                builder: (context, _p, c) {
+                                  return _p.editablePath
+                                      ? ContextMenuArea(
+                                          width: 180,
+                                          verticalPadding: 20,
+                                          builder: (BuildContext context) => [
+                                            Shortcuts(
+                                              shortcuts: {
+                                                LogicalKeySet(LogicalKeyboardKey
+                                                        .escape):
+                                                    const HideMenuIntent(),
+                                              },
+                                              child: Actions(
+                                                actions: {
+                                                  HideMenuIntent:
+                                                      CallbackAction<
+                                                          HideMenuIntent>(
+                                                    onInvoke: (HideMenuIntent
+                                                            intent) =>
+                                                        Navigator.of(context)
+                                                            .pop(),
+                                                  ),
+                                                },
+                                                child: Focus(
+                                                  autofocus: true,
+                                                  child: Column(
+                                                    children: [
+                                                      TappableListTile(
+                                                        onTap: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                        leading: const Icon(
+                                                            FluentIcons.move),
+                                                        title: const Text(
+                                                            'Modify'),
+                                                      ),
+                                                      TappableListTile(
+                                                        onTap: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                        leading: const Icon(material
+                                                            .Icons
+                                                            .move_down_rounded),
+                                                        title: const Text(
+                                                            'Change index'),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                          child: c!,
+                                        )
+                                      : c!;
+                                },
+                                child: _marker,
+                              ),
                             ),
                           ),
                         ),
