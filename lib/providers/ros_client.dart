@@ -15,11 +15,13 @@ class ROSClient extends ChangeNotifier {
   late final Topic _cmdVel;
   late final Topic _cmdVelFB;
   late final Timer _cmdPubTimer;
-  late final ActionClient _moveBaseAction;
+  late final ActionClient odomAction;
 
   late final Topic _gps;
 
   late final Topic _odom;
+
+  bool isAutonomous = false;
 
   ROSClient() {
     _ros = Ros();
@@ -58,11 +60,12 @@ class ROSClient extends ChangeNotifier {
     );
 
     connect();
-    _moveBaseAction = ActionClient(
+    odomAction = ActionClient(
       ros: _ros,
-      serverName: 'fibonacci',
-      actionName: 'FibonacciAction',
-      packageName: 'actionlib_tutorials',
+      // serverName: 'OdomNavigate',
+      serverName: 'EpsiNavigate',
+      actionName: 'odom_navigateAction',
+      packageName: 'autonomous_manager',
     );
   }
 
@@ -97,7 +100,9 @@ class ROSClient extends ChangeNotifier {
     _cmdPubTimer = Timer.periodic(
       const Duration(milliseconds: 100),
       (timer) {
-        _cmdVel.publish(cmdVelMsg);
+        if (!isAutonomous) {
+          _cmdVel.publish(cmdVelMsg);
+        }
       },
     );
   }
@@ -164,5 +169,8 @@ class ROSClient extends ChangeNotifier {
   bool get forceEmergency => _forceEmergency;
   set forceEmergency(bool v) {
     _forceEmergency = v;
+    if (v == false) {
+      isAutonomous = false;
+    }
   }
 }

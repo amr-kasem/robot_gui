@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'package:robot_gui/models/waypoint.dart';
 import 'package:robot_gui/providers/ros_client.dart';
 
 import '../models/geopoint.dart';

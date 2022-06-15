@@ -1,5 +1,6 @@
+import 'dart:developer';
+
 import 'package:flutter/foundation.dart';
-import 'package:robot_gui/models/waypoint.dart';
 import 'package:robot_gui/providers/ros_client.dart';
 
 import '../models/odompoint.dart';
@@ -21,6 +22,7 @@ enum NavigationMode {
 class OdomNavigationProvider with ChangeNotifier {
   late ROSClient _ros;
   NavigationMode _mode = NavigationMode.go;
+  bool _initiated = false;
   OdomNavigationProvider();
   factory OdomNavigationProvider.update(
       ROSClient ros, OdomNavigationProvider obj) {
@@ -28,13 +30,20 @@ class OdomNavigationProvider with ChangeNotifier {
     return obj;
   }
 
+  Future<void> initiate() async {
+    if (!_initiated) {
+      await _ros.odomAction.connect();
+      _initiated = true;
+    }
+  }
+
   bool _isNavigating = false;
 
   bool get isNavigating => _isNavigating;
   set isNavigating(bool v) {
-    if (_currentTarget == null) {
-      return;
-    }
+    // if (_currentTarget == null) {
+    //   return;
+    // }
     _isNavigating = v;
     notifyListeners();
   }
@@ -154,5 +163,61 @@ class OdomNavigationProvider with ChangeNotifier {
 
   void clearSwap() {
     _swap.clear();
+  }
+
+  Future<void> start() async {
+    // print({
+    //   'targetPoses': _wayPoints.map(
+    //     (e) => {
+    //       'position': {
+    //         'x': e.x,
+    //         'y': e.y,
+    //         'z': 0,
+    //       },
+    //       'orientation': {
+    //         'x': 0,
+    //         'y': 0,
+    //         'z': 0,
+    //         'w': 1,
+    //       },
+    //       'repeated': true,
+    //       'recursive': true,
+    //       'returnHome': true
+    //     },
+    //   )
+    // });
+    _ros.isAutonomous = true;
+    if (_ros.isAutonomous) {
+      await _ros.odomAction.setGoal(
+        goal: {
+          'targetPoses': _wayPoints
+              .map(
+                (e) => {
+                  'position': {
+                    'x': e.x,
+                    'y': e.y,
+                    'z': 0,
+                  },
+                  'orientation': {
+                    'x': 0,
+                    'y': 0,
+                    'z': 0,
+                    'w': 1,
+                  },
+                },
+              )
+              .toList(),
+          'repeated': {'data': true},
+          'recursive': {'data': true},
+          'returnHome': {'data': true},
+        },
+      );
+    }
+    isNavigating = true;
+  }
+
+  Future<void> cancel() async {
+    _ros.odomAction.cancel();
+    isNavigating = false;
   }
 }
