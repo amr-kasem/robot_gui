@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/foundation.dart';
 import 'package:robot_gui/providers/ros_client.dart';
 
@@ -188,7 +186,7 @@ class OdomNavigationProvider with ChangeNotifier {
     // });
     _ros.isAutonomous = true;
     if (_ros.isAutonomous) {
-      await _ros.odomAction.setGoal(
+      _ros.odomAction.setGoal(
         goal: {
           'targetPoses': _wayPoints
               .map(

@@ -63,6 +63,7 @@ dependencies:
   dartssh2: ^2.6.1
   xterm: ^2.6.0
   http_auth: ^1.0.1
+  flutter_gamepad: ^0.3.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
