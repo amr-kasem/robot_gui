@@ -207,9 +207,9 @@ class OdomNavigationProvider with ChangeNotifier {
                 },
               )
               .toList(),
-          'repeated': {'data': true},
-          'recursive': {'data': true},
-          'returnHome': {'data': true},
+          'repeated': {'data': false},
+          'recursive': {'data': false},
+          'returnHome': {'data': false},
         },
       );
     }

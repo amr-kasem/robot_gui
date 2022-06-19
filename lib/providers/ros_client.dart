@@ -158,6 +158,9 @@ class ROSClient extends ChangeNotifier {
 
   set isEmergency(bool v) {
     if (!_forceEmergency) {
+      if (v == false) {
+        isAutonomous = false;
+      }
       _emergencyStop = v;
       zeroAngular();
       zeroLinear();
@@ -169,8 +172,5 @@ class ROSClient extends ChangeNotifier {
   bool get forceEmergency => _forceEmergency;
   set forceEmergency(bool v) {
     _forceEmergency = v;
-    if (v == false) {
-      isAutonomous = false;
-    }
   }
 }
