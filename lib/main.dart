@@ -109,7 +109,6 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ROSClient()),
-        ChangeNotifierProvider(create: (_) => JoyStickProvider()),
         ChangeNotifierProxyProvider<ROSClient, GeoNavigationProvider>(
           create: (ctx) => GeoNavigationProvider(),
           update: (ctx, _ros, _oldProvider) =>
@@ -119,6 +118,12 @@ class MyApp extends StatelessWidget {
           create: (ctx) => OdomNavigationProvider(),
           update: (ctx, _ros, _oldProvider) =>
               OdomNavigationProvider.update(_ros, _oldProvider!),
+        ),
+        ChangeNotifierProxyProvider2<ROSClient, OdomNavigationProvider,
+            JoyStickProvider>(
+          create: (ctx) => JoyStickProvider(),
+          update: (ctx, _ros, _odom, _oldProvider) =>
+              JoyStickProvider.update(_ros, _odom, _oldProvider!),
         ),
       ],
       child: FluentApp(

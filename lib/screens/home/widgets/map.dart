@@ -8,6 +8,7 @@ import 'package:flutter/material.dart' as material;
 import 'package:provider/provider.dart';
 import 'package:robot_gui/models/geopoint.dart';
 import 'package:robot_gui/models/odompoint.dart';
+import 'package:robot_gui/providers/joystick.dart';
 import 'package:robot_gui/providers/ros_client.dart';
 import 'package:vector_math/vector_math.dart' as vector;
 import 'dart:math' as math;
@@ -198,16 +199,37 @@ class _MapViewState extends State<MapView> {
                     stream: _ros.odom,
                     builder: (context, dataSnapshot) {
                       return IconButton(
-                        icon: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: Colors.white.withOpacity(0.4),
-                          ),
-                          padding: const EdgeInsets.all(5),
+                        icon: Consumer<JoyStickProvider>(
                           child: const Icon(
                             FluentIcons.add,
                             size: 24,
                           ),
+                          builder: (context, js, c) {
+                            if (js.pickPoint) {
+                              var _p = (dataSnapshot.data as Map?)?['msg']
+                                  ?['pose']?['pose']?['position'];
+                              if (_p != null) {
+                                _navigation.addWayPoint(
+                                  OdomPoint(
+                                    x: _p['x'],
+                                    y: _p['y'],
+                                    lat: lat,
+                                    long: long,
+                                  ),
+                                );
+                              }
+                              // print('picked');
+                            }
+                            return Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Colors.white
+                                    .withOpacity(js.pickPoint ? 1 : 0.4),
+                              ),
+                              padding: const EdgeInsets.all(5),
+                              child: c,
+                            );
+                          },
                         ),
                         onPressed: () async {
                           var _p = (dataSnapshot.data as Map?)?['msg']?['pose']

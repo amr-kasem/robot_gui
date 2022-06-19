@@ -42,10 +42,6 @@ class JoyStickSelector extends StatelessWidget {
             ],
           ),
         ),
-        StreamBuilder(
-          stream: provider.query(),
-          builder: ((context, snapshot) => SizedBox.shrink()),
-        )
       ],
     );
   }

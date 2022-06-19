@@ -2,6 +2,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:joystick/joystick.dart';
 import 'package:provider/provider.dart';
+import 'package:robot_gui/providers/joystick.dart';
 import 'package:robot_gui/providers/ros_client.dart';
 
 class NavigationJoystick extends StatefulWidget {
@@ -14,9 +15,24 @@ class NavigationJoystick extends StatefulWidget {
 }
 
 class _NavigationJoystickState extends State<NavigationJoystick> {
+  JoyStickProvider? provider;
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    provider?.detach();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final _rosClient = Provider.of<ROSClient>(context, listen: false);
+
+    provider = Provider.of<JoyStickProvider>(context, listen: false);
+    provider?.attach();
     return Align(
       alignment: AlignmentDirectional.bottomStart,
       child: SizedBox(

@@ -122,6 +122,12 @@ class ROSClient extends ChangeNotifier {
     cmdVelMsg['linear']!['x'] = hysteresisCheck(cmdVelMsg['linear']!['x']!);
   }
 
+  void setLinear(double i) {
+    if (_emergencyStop) return;
+
+    cmdVelMsg['linear']!['x'] = i;
+  }
+
   void linearDown({i = 0.01}) {
     if (_emergencyStop) return;
     if (cmdVelMsg['linear']!['x']! > minLinearVel) {
@@ -144,6 +150,12 @@ class ROSClient extends ChangeNotifier {
       cmdVelMsg['angular']!['z'] = cmdVelMsg['angular']!['z']! - i;
     }
     cmdVelMsg['angular']!['z'] = hysteresisCheck(cmdVelMsg['angular']!['z']!);
+  }
+
+  void setAngular(double i) {
+    if (_emergencyStop) return;
+
+    cmdVelMsg['angular']!['z'] = i;
   }
 
   void zeroLinear() {

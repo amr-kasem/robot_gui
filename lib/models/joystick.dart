@@ -1,7 +1,7 @@
 class JoyStick {
   int id;
   String name;
-  List axis = [];
-  List buttons = [];
+  List<int> axis = [];
+  List<int> buttons = [];
   JoyStick(this.id, this.name);
 }
