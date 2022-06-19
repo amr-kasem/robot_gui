@@ -3,7 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart' as flutter_acrylic;
 import 'package:provider/provider.dart';
+import 'package:robot_gui/models/joystick.dart';
 import 'package:robot_gui/providers/geo_navigation.dart';
+import 'package:robot_gui/providers/joystick.dart';
 import 'package:robot_gui/providers/odom_navigation.dart';
 import 'package:robot_gui/providers/ros_client.dart';
 import 'package:robot_gui/screens/index.dart';
@@ -41,8 +43,11 @@ void main() async {
     await flutter_acrylic.Window.initialize();
     await WindowManager.instance.ensureInitialized();
     windowManager.waitUntilReadyToShow().then((_) async {
-      await windowManager.setTitleBarStyle(TitleBarStyle.hidden,
-          windowButtonVisibility: false);
+      await windowManager.maximize();
+      await windowManager.setTitleBarStyle(
+        TitleBarStyle.hidden,
+        windowButtonVisibility: false,
+      );
       await windowManager.setSize(const Size(755, 545));
       await windowManager.setMinimumSize(const Size(755, 545));
       await windowManager.center();
@@ -104,6 +109,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ROSClient()),
+        ChangeNotifierProvider(create: (_) => JoyStickProvider()),
         ChangeNotifierProxyProvider<ROSClient, GeoNavigationProvider>(
           create: (ctx) => GeoNavigationProvider(),
           update: (ctx, _ros, _oldProvider) =>

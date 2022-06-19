@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 
+import 'widgets/joystick_selector.dart';
+
 class SettingsScreen extends StatelessWidget {
   final Function updateView;
   const SettingsScreen({Key? key, required this.updateView}) : super(key: key);
@@ -41,6 +43,7 @@ class SettingsScreen extends StatelessWidget {
             ],
           ),
         ),
+        const JoyStickSelector(),
       ],
     );
   }
