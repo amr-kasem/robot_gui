@@ -10,6 +10,7 @@ import 'package:robot_gui/models/geopoint.dart';
 import 'package:robot_gui/models/odompoint.dart';
 import 'package:robot_gui/providers/joystick.dart';
 import 'package:robot_gui/providers/ros_client.dart';
+import 'package:roslib/actionlib/action_goal.dart';
 import 'package:vector_math/vector_math.dart' as vector;
 import 'dart:math' as math;
 
@@ -79,8 +80,19 @@ class _MapViewState extends State<MapView> {
                   //     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
                   // subdomains: ['a', 'b', 'c'],
                   attributionBuilder: (_) {
-                    return const Text("JAGUAR Local Map");
+                    return Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: const Text(
+                        "Misc.jaguar_local_map",
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 102, 102, 102)),
+                      ).tr(),
+                    );
                   },
+                  attributionAlignment:
+                      Localizations.localeOf(context).languageCode == 'ar'
+                          ? Alignment.topLeft
+                          : Alignment.topRight,
                 ),
                 MarkerLayerOptions(
                   markers: [
@@ -281,56 +293,90 @@ class _MapViewState extends State<MapView> {
                           StreamBuilder(
                             stream: _ros.odomAction.status,
                             builder: (context, data) {
-                              return Container(
-                                color: Colors.white,
-                                child: Text(
-                                  data.data.toString(),
+                              // return Container(
+                              //   color: Colors.white,
+                              //   child: Text(
+                              //     data.data.toString(),
+                              //   ),
+                              // );
+
+                              return Padding(
+                                padding: const EdgeInsets.all(15),
+                                child: FilledButton(
+                                  onPressed: data.data == null
+                                      ? null
+                                      : () {
+                                          if (!_navigation.isNavigating) {
+                                            _navigation.start();
+                                          } else {
+                                            _navigation.cancel();
+                                          }
+                                        },
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      AnimatedSwitcher(
+                                        duration:
+                                            const Duration(milliseconds: 200),
+                                        child: Icon(
+                                          _navigation.isNavigating
+                                              ? FluentIcons.stop_solid
+                                              : FluentIcons.box_play_solid,
+                                          key: ValueKey(
+                                              _navigation.isNavigating),
+                                          color: _navigation.isNavigating
+                                              ? Colors.red
+                                              : Colors.white,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 8,
+                                      ),
+                                      Text(
+                                        data.data == null
+                                            ? 'Actions.Buttons.unavailable'.tr()
+                                            : data.data ==
+                                                    ActionServerStatus.REJECTED
+                                                ? 'Actions.Buttons.rejected'
+                                                    .tr()
+                                                : data.data ==
+                                                            ActionServerStatus
+                                                                .READY ||
+                                                        data.data ==
+                                                            ActionServerStatus
+                                                                .NOTSET
+                                                    ? 'Actions.Buttons.startMission'
+                                                        .tr()
+                                                    : data.data ==
+                                                            ActionServerStatus
+                                                                .PREEMPTED
+                                                        ? 'Actions.Buttons.preempted'
+                                                            .tr()
+                                                        : data.data ==
+                                                                ActionServerStatus
+                                                                    .PREEMPTING
+                                                            ? 'Actions.Buttons.preempting'
+                                                                .tr()
+                                                            : data.data ==
+                                                                    ActionServerStatus
+                                                                        .ABORTED
+                                                                ? 'Actions.Buttons.aborted'
+                                                                    .tr()
+                                                                : data.data ==
+                                                                        ActionServerStatus
+                                                                            .ACTIVE
+                                                                    ? 'Actions.Buttons.cancelMission'
+                                                                        .tr()
+                                                                    : '${data.data}'
+                                                                        .tr(),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
                             },
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(15),
-                            child: SizedBox(
-                              width: 130,
-                              child: FilledButton(
-                                onPressed: () {
-                                  if (!_navigation.isNavigating) {
-                                    _navigation.start();
-                                  } else {
-                                    _navigation.cancel();
-                                  }
-                                },
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    AnimatedSwitcher(
-                                      duration:
-                                          const Duration(milliseconds: 200),
-                                      child: Icon(
-                                        _navigation.isNavigating
-                                            ? FluentIcons.stop_solid
-                                            : FluentIcons.box_play_solid,
-                                        key: ValueKey(_navigation.isNavigating),
-                                        color: _navigation.isNavigating
-                                            ? Colors.red
-                                            : Colors.white,
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 8,
-                                    ),
-                                    Text(
-                                      !_navigation.isNavigating
-                                          ? 'Actions.Buttons.startMission'.tr()
-                                          : 'Actions.Buttons.cancelMission'
-                                              .tr(),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
                           ),
                         ],
                       ),

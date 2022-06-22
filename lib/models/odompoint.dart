@@ -45,8 +45,8 @@ class OdomPoint extends WayPoint {
   @override
   bool operator ==(Object other) {
     return other is OdomPoint &&
-        (other.x - x).abs() < 0.00003 &&
-        (other.y - y).abs() < 0.00003;
+        (other.x - x).abs() < 0.5 &&
+        (other.y - y).abs() < 0.5;
   }
 
   @override

@@ -24,8 +24,13 @@
             "no":"لا",
             "retry":"أعد المحاولة",
             "track":"تتبع المركبة",
-            "startMission":"بدء المهمة",
-            "cancelMission":"إلغاء المهمة"
+            "startMission":"ذهاب",
+            "cancelMission":"إلغاء",
+            "unavailable":"غير متاح",
+            "rejected":"المهمة مرفوضة",
+            "preempted":"تم إلغاء المهمة",
+            "preempting":"جارى إلغاء المهمة",
+            "aborted":"حدث خطأ فى النظام"
         }
     },
     "Alerts":{
@@ -35,5 +40,8 @@
         "Messages":{
             "makesure":"هل أنت متأكد؟"
         }
+    },
+    "Misc":{
+        "jaguar_local_map":"خريطة چاجوار المحلية"
     }
 }

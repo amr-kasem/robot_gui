@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:robot_gui/providers/ros_client.dart';
+import 'package:roslib/actionlib/action_goal.dart';
 
 import '../models/odompoint.dart';
 

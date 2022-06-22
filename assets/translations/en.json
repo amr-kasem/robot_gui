@@ -25,7 +25,12 @@
             "retry":"Tap to reload",
             "track":"Track",
             "startMission":"Start Mission",
-            "cancelMission":"Cancel Mission"
+            "cancelMission":"Cancel Mission",
+            "unavailable":"Unavailable",
+            "rejected":"Mission Rejected",
+            "preempted":"Mission Canceled",
+            "preempting":"Cancel Mission",
+            "aborted":"Mission Aborted"
         }
     },
     "Alerts":{
@@ -35,5 +40,8 @@
         "Messages":{
             "makesure":"Are you sure?"
         }
+    },
+    "Misc":{
+        "jaguar_local_map":"Jaguar Local Map"
     }
 }
