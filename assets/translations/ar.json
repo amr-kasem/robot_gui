@@ -1,0 +1,47 @@
+{
+    "Title":"وحدة التحكم",
+    "Navigation": {
+        "Main": "الرئيسية",
+        "Navigation": "القيادة الذاتية",
+        "Settings": "الإعدادات",
+        "Terminal": "SSH Terminal",
+        "Log": "السجلات (ROS)"
+    },
+    "Languages": {
+        "Arabic": "العربية",
+        "English": "English"
+    },
+    "Settings":{
+        "SelectLanguage":"اختر اللغة"
+    },
+    "Actions":{
+        "onClose":{
+            "alert":"هل تريد حقاً إغلاق لوحة التحكم؟",
+            "title":"تأكيد الإغلاق"
+        },
+        "Buttons":{
+            "yes":"نعم",
+            "no":"لا",
+            "retry":"أعد المحاولة",
+            "track":"تتبع المركبة",
+            "startMission":"ذهاب",
+            "cancelMission":"إلغاء",
+            "unavailable":"غير متاح",
+            "rejected":"المهمة مرفوضة",
+            "preempted":"تم إلغاء المهمة",
+            "preempting":"جارى إلغاء المهمة",
+            "aborted":"حدث خطأ فى النظام"
+        }
+    },
+    "Alerts":{
+        "Titles":{
+            "caution":"تحذير"
+        },
+        "Messages":{
+            "makesure":"هل أنت متأكد؟"
+        }
+    },
+    "Misc":{
+        "jaguar_local_map":"خريطة چاجوار المحلية"
+    }
+}

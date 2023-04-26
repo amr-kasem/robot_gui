@@ -1,0 +1,47 @@
+{
+    "Title":"Control Station",
+    "Navigation": {
+        "Main": "Home",
+        "Navigation": "Self Control",
+        "Settings": "Settings",
+        "Terminal": "SSH Terminal",
+        "Log": "ROS Log"
+    },
+    "Languages": {
+        "Arabic": "العربية",
+        "English": "English"
+    },
+    "Settings":{
+        "SelectLanguage":"Select Language"
+    },
+    "Actions":{
+        "onClose":{
+            "alert":"Are you sure you want to close this window?",
+            "title":"Confirm close"
+        },
+        "Buttons":{
+            "yes":"Yes",
+            "no":"No",
+            "retry":"Tap to reload",
+            "track":"Track",
+            "startMission":"Start Mission",
+            "cancelMission":"Cancel Mission",
+            "unavailable":"Unavailable",
+            "rejected":"Mission Rejected",
+            "preempted":"Mission Canceled",
+            "preempting":"Cancel Mission",
+            "aborted":"Mission Aborted"
+        }
+    },
+    "Alerts":{
+        "Titles":{
+            "caution":"Caution!"
+        },
+        "Messages":{
+            "makesure":"Are you sure?"
+        }
+    },
+    "Misc":{
+        "jaguar_local_map":"Jaguar Local Map"
+    }
+}
